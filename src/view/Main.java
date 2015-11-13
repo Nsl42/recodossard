@@ -1,6 +1,13 @@
 package view;
 
-import control.OCREngine;
+import model.CannyClean;
+import java.io.File;
+import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.util.ImageHelper;
+import javax.imageio.ImageIO;
+import net.sourceforge.tess4j.TesseractException;
+import org.opencv.core.Core;
+
 
 public class Main{
     public static void main(String args[]){
@@ -12,6 +19,25 @@ public class Main{
             {
                 System.out.println("Argument must be a jpg image file !");
                 return;
+            }else {
+                System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+                CannyClean toto = new CannyClean(arg);
+                toto.executeCanny();
+                toto.writeImg();
+                 File imageFile = new File("/tmp/tutu.jpg");
+
+                 Tesseract instance = Tesseract.getInstance(); 
+                    instance.setTessVariable("tessedit_char_whitelist", "0123456789");
+//
+
+        try {
+
+            String result = instance.doOCR(ImageHelper.invertImageColor(ImageIO.read(imageFile)));
+            System.out.println(result);
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
             }
 
         }
