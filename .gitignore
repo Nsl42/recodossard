@@ -1,1 +1,4 @@
 *.class
+nbproject/
+build.xml
+/dist/
