@@ -7,11 +7,15 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import controller.Controller;
 
 public class Main{
-	public static void main(String args[]){
+	
+	static Controller myController = new Controller();
+	
+	public static void main(String args[]) throws Exception{
 		
-		ArrayList<Integer> res = new ArrayList<Integer>();
+		ArrayList<Integer> res = new ArrayList();
 		boolean optionVactive=false;
 		if (args.length == 0) {
 			System.out.println("Usage : java Main [-h] [--help] [-v] <image file> [<output file>]");
@@ -38,6 +42,7 @@ public class Main{
 				}else if (file.exists() & file.isDirectory()) { //repertoire
 					res = analyseDirectory(args[1], optionVactive, res);
 				}else{
+					System.out.println("Err: File doesn't exsit");
 					System.out.println("Usage : java Main [-h] [--help] [-v] <image file> [<output file>]");
 				}
 			}else if(file.exists() & file.isFile()) { //fichier
@@ -45,6 +50,7 @@ public class Main{
 			}else if(file.exists() & file.isDirectory()) { //repertoire
 				res = analyseDirectory(args[0], optionVactive, res);
 			}else{
+				System.out.println("Err: File doesn't exsit");
 				System.out.println("Usage : java Main [-h] [--help] [-v] <image file> [<output file>]");
 			}
 		
@@ -58,9 +64,9 @@ public class Main{
 		}
 	}
 
-	public static ArrayList<Integer> analyseFile(String file, boolean optionV){
+	public static ArrayList<Integer> analyseFile(String file, boolean optionV) throws Exception{
 		boolean valid=true;
-		ArrayList<Integer> result = new ArrayList();;
+		ArrayList<Integer> result = new ArrayList<Integer>();
 		try {
 			Image image=ImageIO.read(new File(file));
 			if (image == null) {
@@ -68,6 +74,7 @@ public class Main{
 				System.out.println("The file "+file+" could not be opened , it is not an image");
 			}
 			// ---------  Call function for OCR
+			result = myController.findNumber(file);
 			if(optionV){
 				System.out.println("File " + file + "done");
 			}
@@ -110,4 +117,6 @@ public class Main{
         }
 		return res;
 	}
+
 }
+
