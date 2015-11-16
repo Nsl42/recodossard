@@ -1,36 +1,61 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package model;
 
-import java.io.File;
-import java.net.URL;
-
+/**
+ *
+ * @author nsl
+ */
 public class Settings {
 	
-	/**
-	 * Location of the face detection xml
-	 */
-	//public final static URL FACE_DETECTION_PATH = 
-		//	Configuration.class.getResource("/res/tessdata" + File.separator + "haarcascade_frontalface_alt2.xml");
-	
-	public final static String FACE_DETECTION_PATH = "res/tessdata/haarcascade_frontalface_alt2.xml";
-	
-	public static boolean debugEnabled;
-	
-	public static enum OCR_MODE {
-		EACH_NUMBER,
-		TOTAL_NUMBER
+	private boolean EXIF;
+	private boolean ADDITONNAL_DATA;
+	private boolean BENCH;
+	private String ALGO;
+
+	public boolean getEXIF() {
+		return EXIF;
+	}
+
+	public void setEXIF(boolean EXIF) {
+		this.EXIF = EXIF;
+	}
+
+	public boolean getADDITONNAL_DATA() {
+		return ADDITONNAL_DATA;
+	}
+
+	public void setADDITONNAL_DATA(boolean ADDITONNAL_DATA) {
+		this.ADDITONNAL_DATA = ADDITONNAL_DATA;
+	}
+
+	public boolean getBENCH() {
+		return BENCH;
+	}
+
+	public void setBENCH(boolean BENCH) {
+		this.BENCH = BENCH;
+	}
+
+	public String getALGO() {
+		return ALGO;
+	}
+
+	public void setALGO(String ALGO) {
+		this.ALGO = ALGO;
 	}
 	
-	public static enum FINDING_MODE {
-		DETECT_FACE,
-		ALL_IMAGE
+	/* Business Methods */
+	public JsonObject getJSONObject()
+	{
+			JsonObject ret = Json.createObjectBuilder();
+			ret.add("EXIF", this.EXIF);
+			ret.add("ADDITONNAL_DATA", this.ADDITONNAL_DATA);
+			ret.add("BENCH", this.BENCH);
+			ret.add("ALGO", this.ALGO);
+			return ret;
 	}
-	
-	public static enum OCR_ENGINE {
-		CUSTOM,
-		TESSERACT
-	}
-	
-	public final static File DEBUG_DIRECTORY = new File("debug/");
-	
-	public final static String OCR_DATA_PATH = "res/";
 }
