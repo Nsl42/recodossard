@@ -1,12 +1,15 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.UID;
+import java.util.Random;
+import java.util.UUID;
+
+import javax.json.Json;
 import javax.json.JsonObject;
 
 public class ImgModel{
     
-    private UID id;
+    private UUID id;
     private String path;
     private ArrayList<Integer> result;
     private BenchData benchData;
@@ -16,7 +19,8 @@ public class ImgModel{
 
 
     public ImgModel(String pth){
-	    this.id = new UID();
+    	Random r = new Random();
+	    this.id = new UUID(r.nextLong(), r.nextLong());
 	    this.path = pth;
 	    this.result = new ArrayList<Integer>();
 	    this.benchData = null;
@@ -53,7 +57,7 @@ public class ImgModel{
 	on result or settings by getting the object, and the ID should never be set 
 	somewhere else.
 	*/
-	public UID getId() {
+	public UUID getId() {
 		return id;
 	}
 
@@ -68,14 +72,19 @@ public class ImgModel{
     
  
 	/* Business Methods */
+	
+	public void process() {
+		CVOCR cvocr = new CVOCR(path);
+		cvocr.launchDetection(false);
+	}
 
 	/**
 	 * toJSON() : Returns the object as a JSON string
 	 */
 	public String toJSON() {
 		
-		JsonObject ret = Json.createObjectBuilder();
-		JsonObject inside = Json.createObjectBuilder();
+		JsonObject ret = (JsonObject) Json.createObjectBuilder();
+		JsonObject inside = (JsonObject) Json.createObjectBuilder();
 		inside.add(this.path, this.result.toArray());
 		inside.add("processed", this.processed);
 		// Writing the benchmarking data
