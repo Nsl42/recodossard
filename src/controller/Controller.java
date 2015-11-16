@@ -1,16 +1,14 @@
 package controller;
 
-import java.io.File;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
-import model.NumberFinder;
+import model.PhotoList;
 
 public class Controller {
 	
-	private NumberFinder nf = new NumberFinder();
-    
-    public ArrayList<Integer> findNumber(String filepath) throws Exception {
-    	ArrayList<Integer> results = nf.launchDetection(filepath);
-    	return results;
-    }
+	public static HashMap<UUID, PhotoList> loadedPhotoLists;
+	
+	
+	
 }

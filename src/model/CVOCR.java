@@ -35,7 +35,7 @@ import model.Settings.OCR_MODE;
 
 
 
-public class NumberFinder {
+public class CVOCR {
 	
 	private static Random random = new Random();
 	

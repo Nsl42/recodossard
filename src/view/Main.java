@@ -76,7 +76,7 @@ public class Main{
 			// ---------  Call function for OCR
 			result = myController.findNumber(file);
 			if(optionV){
-				System.out.println("File " + file + "done");
+				System.out.println("File " + file + " done");
 			}
 		} catch(IOException ex) {
 			valid=false;
@@ -107,7 +107,7 @@ public class Main{
             			}
             			// ---------  Call function for OCR
             			if(optionV){
-            				System.out.println("File " + files[i] + "done");
+            				System.out.println("File " + files[i] + " done");
             			}
             		} catch(IOException ex) {
             			System.out.println("The file "+files[i]+" could not be opened , an error occurred.");
