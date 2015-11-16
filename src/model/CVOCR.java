@@ -29,54 +29,23 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
-import model.Settings.FINDING_MODE;
-import model.Settings.OCR_ENGINE;
-import model.Settings.OCR_MODE;
+import model.CVOCRSettings.FINDING_MODE;
+import model.CVOCRSettings.OCR_ENGINE;
+import model.CVOCRSettings.OCR_MODE;
 
 
 
 public class CVOCR {
 	
+	/**
+	 * Random object to generate random color
+	 */
 	private static Random random = new Random();
-	
-	// CONSTRUCTORS ===========================================================
 
-	public NumberFinder() {
-		
-		//this.customEngine = new NumberOCR();
-		//customEngine.loadAndTrain();
-		//Face detector
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		//System.loadLibrary()
-		this.faceDetector = new CascadeClassifier(Settings.FACE_DETECTION_PATH);
-	}
-	
-	// ========================================================================
-
-	public ArrayList<Integer> launchDetection(String filepath) throws Exception {
-
-		Settings.debugEnabled = true;
-		
-		//this.currentOCREngine = OCR_ENGINE.TESSERACT;
-
-		this.imageMat = Imgcodecs.imread(filepath);
-		this.imageGrayMat = this.imageMat.clone();
-		Imgproc.cvtColor(this.imageGrayMat, this.imageGrayMat, Imgproc.COLOR_BGR2GRAY);
-
-		ArrayList<Integer> results = getImageNumbers();
-		System.out.println("results: " + results);
-		return results;
-	}
 	/**
 	 * Face detector
 	 */
 	private CascadeClassifier faceDetector;
-
-	/**
-	 * Location of the face detection xml
-	 */
-	//public final static  URL FACE_DETECTION_PATH = 
-	//	NumberFinder.class.getResource("/res/tessdata" + File.separator + "haarcascade_frontalface_alt2.xml");
 
 	/**
 	 * To know if a detection is currently running
@@ -101,8 +70,19 @@ public class CVOCR {
 	private Scalar colorText = new Scalar(255, 255,0);
 	private Scalar colorNoNumber = new Scalar(0,0,255);
 
+	/**
+	 * White color as double value
+	 */
+	private static final double[] WHITE_COLOR = { 255.0 };
+
+	/**
+	 * Black color as double value
+	 */
+	private static final double[] BLACK_COLOR = { 0.0 };
+
+
 	// OPENCV Parameters ======================================================
-	
+
 	/**
 	 * Parameter : canny threshold
 	 */
@@ -139,7 +119,7 @@ public class CVOCR {
 
 	/**
 	 * The percentage of white color found to consider that it can't be a race bib
-	 *///75 before
+	 */
 	private int paramMaxWhiteColorPercentageBib = 75;
 
 	/**
@@ -152,47 +132,17 @@ public class CVOCR {
 	 * Maximum area of a letter
 	 */
 	private int paramMaxLetterArea = 150000;
-	
+
 	/**
 	 * Space between two digit when put together
 	 */
 	private int paramSpaceBetweenDigits = 4;
-	
+
 	/**
 	 * The maximum length of a detected number
 	 */
 	private int paramNumberMaxLength = 10;
-
-
-	
 	// ========================================================================
-	
-	/**
-	 * White color as double value
-	 */
-	private static final double[] WHITE_COLOR = { 255.0 };
-
-	/**
-	 * Black color as double value
-	 */
-	private static final double[] BLACK_COLOR = { 0.0 };
-
-	
-
-	/**
-	 * The algorithm to detect face and search for digits
-	 */
-	public static final int MODE_FIND_DETECT_FACE = 0;
-
-	/**
-	 * The algorithm to directly search for digits
-	 */
-	public static final int MODE_FIND_ALL_IMAGE = 1;
-
-	/**
-	 * The algorithm that find the numbers for the global race bib
-	 */
-	public static final int MODE_OCR_TOTAL_NUMBER = 1;
 
 	private FINDING_MODE currentFindingMode = FINDING_MODE.DETECT_FACE;
 
@@ -202,54 +152,64 @@ public class CVOCR {
 	 * Mode to recognize the numbers on a image
 	 */
 	private OCR_MODE currentModeOcr = OCR_MODE.EACH_NUMBER;
-	
+
 	/**
 	 * OCR Custom engine
 	 */
 	private NumberOCR customEngine;
 
 	/**
-	 * To get a point that correspond to the origin of the rectTL Point
-	 * @param rectTL the rectTL point
-	 * @param point the wanted point
-	 * @return a new point that really correspond to rectTL origin
+	 * Debug image count (use to save different image)
 	 */
-	private static Point getPointFrom(Point rectTL, Point point) {
-		return new Point(rectTL.x + point.x, rectTL.y + point.y);
-	}
-
+	private int debugImageCount;
+	
+	/**
+	 * Enable debug
+	 */
+	private Boolean debugEnabled;
+	
 	
 
-	private int debugImageCount;
+	// CONSTRUCTORS ===========================================================
 
+	public CVOCR(String path) {
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-	/**
-	 * The algorithm that find the numbers for each character
-	 */
-	//public static final int MODE_OCR_EACH_NUMBER = 0;
+		this.imageMat = Imgcodecs.imread(path);
+		this.imageGrayMat = this.imageMat.clone();
+		Imgproc.cvtColor(this.imageGrayMat, this.imageGrayMat, Imgproc.COLOR_BGR2GRAY);
+
+		//Face detector
+		this.faceDetector = new CascadeClassifier(CVOCRSettings.FACE_DETECTION_PATH);
+	}
+
+	// ========================================================================
+	
+	// Getters ================================================================
+	
+	public ArrayList<Integer> launchDetection(Boolean enableDebug) {
+		this.debugEnabled = enableDebug;
+		ArrayList<Integer> results = getImageNumbers();
+		//System.out.println("results: " + results);
+		return results;
+	}
 
 	/**
 	 * To get the list of numbers in the current image<br>
 	 * @return the list with all numbers found in the current image, can be empty
 	 * @throws Exception if something is wrong in detection
 	 */
-	public ArrayList<Integer> getImageNumbers() throws Exception {
+	public ArrayList<Integer> getImageNumbers() {
 		//Function of configuration
-		//this.currentOcr = RecoDossardConfiguration.ocrEngine;
-		//this.currentModeFind = RecoDossardConfiguration.detectionMode;
 		ArrayList<Integer> numbers = null;
 		//Function of OCR engine, chose the best way to detect digit
 		switch (this.currentOCREngine) {
-		case CUSTOM:
-			this.currentModeOcr = OCR_MODE.EACH_NUMBER;
-			break;
 		case TESSERACT:
 			this.currentModeOcr = OCR_MODE.TOTAL_NUMBER;
-			//this.currentModeOcr = OCR_MODE.EACH_NUMBER;
 			break;
 		}
-		//Current detection will chose to find in all image if it set a detection zone
 
+		//Current detection will chose to find in all image if it set a detection zone
 		// TODO
 		/*if (this.currentDetection != null) {
 			if (this.currentDetection.isResized()) {
@@ -267,14 +227,11 @@ public class CVOCR {
 			break;
 		}
 		// Save image if debug
-		if (Settings.debugEnabled) {
+		if (this.debugEnabled) {
 			Imgproc.putText(this.imageMat, numbers.toString(), new Point(20, 20), Core.FONT_HERSHEY_PLAIN, 1.5, this.colorText);
-			this.saveMat(this.imageMat, Settings.DEBUG_DIRECTORY + "/lastDetectDebug.png");
+			this.saveMat(this.imageMat, CVOCRSettings.DEBUG_DIRECTORY + File.pathSeparator + "lastDetectDebug.png");
 		}
-		//Show the detection result
-		/*if (this.currentDetection != null) {
-			this.currentDetection.setDetectionResult(this.imageMat);
-		}*/
+
 		return numbers;
 	}
 
@@ -316,7 +273,7 @@ public class CVOCR {
 		ArrayList<Rect> numberZones = this.getPossibleNumberZone();
 		for (Rect numberZone : numberZones) {
 			// Take the zone and search for possible letters
-			Mat numberZoneMat = NumberFinder.getMatPart(this.imageGrayMat, numberZone);
+			Mat numberZoneMat = CVOCR.getMatPart(this.imageGrayMat, numberZone);
 			// Check for already present numbers
 			ArrayList<Integer> nbs = this.getMatNumbers(numberZoneMat, numberZone);
 			for (int nb : nbs) {
@@ -352,7 +309,7 @@ public class CVOCR {
 			numberZones.add(estimatePosition);
 
 			// Draw to debug
-			if (Settings.debugEnabled) {
+			if (this.debugEnabled) {
 				Imgproc.rectangle(this.imageMat, new Point(face.x, face.y), new Point(face.x + face.width, face.y + face.height), this.colorFace);
 				Imgproc.rectangle(this.imageMat, estimatePosition.tl(), estimatePosition.br(), this.colorBody);
 			}
@@ -368,7 +325,7 @@ public class CVOCR {
 	 */
 	private static Mat getMatPart(Mat source, Rect area) {
 		Mat part = null;
-		NumberFinder.cleanRectForCrop(area, source.width(), source.height());
+		CVOCR.cleanRectForCrop(area, source.width(), source.height());
 		if (area.width != 1 || area.height != 1) {
 			part = new Mat();
 			Mat cleaned = new Mat(source, area);
@@ -427,18 +384,18 @@ public class CVOCR {
 					}
 				}
 				// Debug draw
-				if (Settings.debugEnabled) {
-					Scalar color = NumberFinder.getRandomColor();
+				if (this.debugEnabled) {
+					Scalar color = CVOCR.getRandomColor();
 					// If it's not the original bitmap
 					if (sourceBitmapArea != null) {
 						if (number != -1) {
 							for (Rect r : group.rectGroup) {
-								Imgproc.rectangle(this.imageMat, NumberFinder.getPointFrom(sourceBitmapArea.tl(), r.tl()), NumberFinder.getPointFrom(sourceBitmapArea.tl(), r.br()), color);
+								Imgproc.rectangle(this.imageMat, CVOCR.getPointFrom(sourceBitmapArea.tl(), r.tl()), CVOCR.getPointFrom(sourceBitmapArea.tl(), r.br()), color);
 							}
-							Imgproc.putText(this.imageMat, "" + number, NumberFinder.getPointFrom(sourceBitmapArea.tl(), group.getGroupBounds().br()), Core.FONT_HERSHEY_PLAIN, 1.5, this.colorText);
+							Imgproc.putText(this.imageMat, "" + number, CVOCR.getPointFrom(sourceBitmapArea.tl(), group.getGroupBounds().br()), Core.FONT_HERSHEY_PLAIN, 1.5, this.colorText);
 						}else{
 							for (Rect r : group.rectGroup) {
-								Imgproc.rectangle(this.imageMat, NumberFinder.getPointFrom(sourceBitmapArea.tl(), r.tl()), NumberFinder.getPointFrom(sourceBitmapArea.tl(), r.br()), this.colorNoNumber);
+								Imgproc.rectangle(this.imageMat, CVOCR.getPointFrom(sourceBitmapArea.tl(), r.tl()), CVOCR.getPointFrom(sourceBitmapArea.tl(), r.br()), this.colorNoNumber);
 							}
 						}
 					} else {
@@ -447,18 +404,18 @@ public class CVOCR {
 								Imgproc.rectangle(this.imageMat, r.tl(), r.br(), color);
 							}
 							Imgproc.putText(this.imageMat, "" + number, group.getGroupBounds().br(), Core.FONT_HERSHEY_PLAIN, 1.5, this.colorText);
-						}else{
+						} else {
 							for (Rect r : group.rectGroup) {
 								Imgproc.rectangle(this.imageMat, r.tl(), r.br(), this.colorNoNumber);
 							}
 						}
 					}
-			}
+				}
 			}
 		}
 		return foundNumbers;
 	}
-	
+
 	/**
 	 * To get a random color
 	 * @return a random color
@@ -476,7 +433,7 @@ public class CVOCR {
 	 */
 	private int getGroupNumber(TextGroup group, Mat src) {
 		int number = -1;
-		
+
 		switch (this.currentModeOcr) {
 		case TOTAL_NUMBER:
 			//Mat groupMat = this.cleanGroupMatForOCR(group, src);
@@ -485,8 +442,8 @@ public class CVOCR {
 			Mat groupMat = getMatPart(src, groupBounds);
 			if (groupMat != null) {
 				number = this.getNumber(groupMat);
-				if (Settings.debugEnabled && number != -1) {
-					this.saveMat(groupMat, Settings.DEBUG_DIRECTORY + File.pathSeparator + this.debugImageCount + "-r" + number + ".png");
+				if (debugEnabled && number != -1) {
+					this.saveMat(groupMat, CVOCRSettings.DEBUG_DIRECTORY + File.pathSeparator + this.debugImageCount + "-r" + number + ".png");
 					this.debugImageCount++;
 				}
 			}
@@ -496,14 +453,14 @@ public class CVOCR {
 			// Sort
 			this.sortTextGroup(group);
 			for (Rect groupRect : group.rectGroup) {
-				Mat part = NumberFinder.getMatPart(src, groupRect);
+				Mat part = CVOCR.getMatPart(src, groupRect);
 				if (part != null) {
 					int nb = this.getNumber(part);
 					if (nb != -1 )//&& nb < 10)
 						groupText += nb;
 					// Save if debug
-					if (Settings.debugEnabled && nb != -1) {
-						this.saveMat(part, Settings.DEBUG_DIRECTORY+"/" + this.debugImageCount+ ".png");
+					if (debugEnabled && nb != -1) {
+						this.saveMat(part, CVOCRSettings.DEBUG_DIRECTORY + File.pathSeparator + this.debugImageCount+ ".png");
 						this.debugImageCount++;
 					}
 				}
@@ -524,11 +481,11 @@ public class CVOCR {
 	 */
 	private int getNumber(Mat part) {
 		int number = -1;
-		
+
 		switch (this.currentOCREngine) {
 		case TESSERACT:
 			BufferedImage img = null;
-			
+
 			MatOfByte byteMat = new MatOfByte();
 			Imgcodecs.imencode(".jpg", part, byteMat);
 			byte[] bytes = byteMat.toArray();
@@ -536,37 +493,26 @@ public class CVOCR {
 			try {
 				img = ImageIO.read(in);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.println("IOExecption: " + e.getMessage());
 			}
-			
-			//ImageHelper.invertImageColor(img);
-			Tesseract instance = new Tesseract();
-			instance.setTessVariable("tessedit_char_whitelist", "0123456789");
-			
-			//instance.setLanguage()
+
+			Tesseract tesseractInstance = new Tesseract();
+			tesseractInstance.setTessVariable("tessedit_char_whitelist", "0123456789");
+
 			try {
-				String recognized = instance.doOCR(ImageHelper.invertImageColor(img));
-				File outputfile = new File(debugImageCount+"image.jpg");
-				ImageIO.write(ImageHelper.invertImageColor(img), "jpg", outputfile);
-
-
+				String recognized = tesseractInstance.doOCR(img);
 				recognized = this.cleanText(recognized);
-				System.out.println("Recognized: " + recognized);
 				number = Integer.parseInt(recognized);
 			} catch (TesseractException e) {
-				System.err.println(e.getMessage());			
+				System.err.println("TesseractException: " + e.getMessage());			
 			} catch (Exception e) {
-				System.err.println(e.getMessage());
+				System.err.println("Execption: " + e.getMessage());
 			}
-			break;
-		case CUSTOM:
-			number = this.customEngine.getNumber(part);
 			break;
 		}
 		return number;
 	}
-	
+
 	/**
 	 * To clean a recognized text
 	 * @param text the recognized text
@@ -634,9 +580,9 @@ public class CVOCR {
 				// If considered as white pixel
 				if (color > this.paramWhiteThreshold) {
 					whiteCount++;
-					mat.put(y, x, NumberFinder.WHITE_COLOR);
+					mat.put(y, x, CVOCR.WHITE_COLOR);
 				} else {
-					mat.put(y, x, NumberFinder.BLACK_COLOR);
+					mat.put(y, x, CVOCR.BLACK_COLOR);
 				}
 				pixelCount++;
 			}
@@ -713,6 +659,18 @@ public class CVOCR {
 		}
 		return found;
 	}
+
+	/**
+	 * To get a point that correspond to the origin of the rectTL Point
+	 * @param rectTL the rectTL point
+	 * @param point the wanted point
+	 * @return a new point that really correspond to rectTL origin
+	 */
+	private static Point getPointFrom(Point rectTL, Point point) {
+		return new Point(rectTL.x + point.x, rectTL.y + point.y);
+	}
+
+	// TextGroup internClass
 
 	/**
 	 * A class that group several rect in a group.<br>

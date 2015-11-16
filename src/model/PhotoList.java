@@ -1,12 +1,12 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.UID;
+import java.util.Random;
+import java.util.UUID;
 import javax.json.JsonObject;
 
 public class PhotoList{
-	
-	private UID id;
+	private UUID id;
 	private String name;
 	private ArrayList<ImgModel> photolist;
 	private ArrayList<PhotoList> sublists;
@@ -14,8 +14,8 @@ public class PhotoList{
 	private DataModel data;
 	
 	public PhotoList(String name) {
-		
-		this.id = new UID();
+		Random r = new Random();
+		this.id = new UUID(r.nextLong(), r.nextLong());
 		this.name = name;
 		this.photolist = new ArrayList<ImgModel>();
 		this.sublists = new ArrayList<PhotoList>();
@@ -48,15 +48,16 @@ public class PhotoList{
 		return data;
 	}
 	/* Business Methods */
-	public boolean contains(id){
+	public boolean contains(UUID id){
 		boolean ret = false;
 		for(ImgModel im : this.getPhotolist())
 		{
 			ret = ret || (im.getId().equals(id));
 		}
-		if(!this.getSublists().isEmpty()))
+		if(!this.getSublists().isEmpty())
 		for(PhotoList pl : this.getSublists())
 			ret = ret || pl.contains(id);
+		return ret;
 	}
 	
 	public String toJSON() {
@@ -85,5 +86,6 @@ public class PhotoList{
 		ret.add(this.getName(), inside);
 		for(PhotoList pl : this.getSublists())
 			ret.add(pl.getName(), pl.getJsonObject());
+		return ret;
 	}
 }
