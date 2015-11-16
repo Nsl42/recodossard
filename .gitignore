@@ -8,3 +8,8 @@ build.xml
 /test/
 /res/
 /tessdata
+build/
+dossard.jpg
+lib/
+manifest.mf
+*.un~

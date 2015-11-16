@@ -38,4 +38,12 @@ class BenchData {
 		this.fauxNegatif = fauxNegatif;
 	}
     
+	/* Business Methods */
+	public JsonObject getJSONObject()
+	{
+			JsonObject ret = Json.createObjectBuilder();
+			ret.add("ProcTime", benchData.getProcTime());
+			ret.add("FauxPositif", benchData.isFauxPositif());
+			ret.add("FauxNegatif", benchData.isFauxNegatif());
+	}
 }

@@ -19,7 +19,7 @@ private HashMap<String,String> DATA;
 
 
 /* Business Methods */
-	public JsonObject getJSONObject()
+	public JsonObject getJsonObject()
 	{
 			JsonObject ret = Json.createObjectBuilder();
 			ret.add("EXIF_VAL", this.EXIF_VALUES);

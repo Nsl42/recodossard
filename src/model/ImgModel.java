@@ -12,7 +12,6 @@ public class ImgModel{
     private BenchData benchData;
     private boolean processed;
     private Settings settings;
-    private JsonObject jsondata;
 
 
     public ImgModel(String pth){
@@ -73,6 +72,14 @@ public class ImgModel{
 	 * toJSON() : Returns the object as a JSON string
 	 */
 	public String toJSON() {
+		JsonObject ret = this.getJsonObject();
+		return ret.toString();
+	}
+
+	/**
+	 * toJSON() : Returns the object as a JSONObject 
+	 */
+	public JsonObject getJsonObject() {
 		
 		JsonObject ret = Json.createObjectBuilder();
 		JsonObject inside = Json.createObjectBuilder();
@@ -83,7 +90,6 @@ public class ImgModel{
 			inside.add("benchData", this.benchData.getJSONObject());
 		inside.add("settings", this.settings.getJSONObject());
 		ret.add(this.id.toString(), inside);
-		this.jsondata = ret;
-		return ret.toString();
+		return ret;
 	}
 }

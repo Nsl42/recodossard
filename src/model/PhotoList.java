@@ -5,16 +5,16 @@ import java.util.UID;
 import javax.json.JsonObject;
 
 public class PhotoList{
-
+	
 	private UID id;
 	private String name;
 	private ArrayList<ImgModel> photolist;
 	private ArrayList<PhotoList> sublists;
 	private Settings settings;
 	private DataModel data;
-
+	
 	public PhotoList(String name) {
-
+		
 		this.id = new UID();
 		this.name = name;
 		this.photolist = new ArrayList<ImgModel>();
@@ -26,30 +26,41 @@ public class PhotoList{
 	public String getName() {
 		return name;
 	}
-
+	
 	public void setName(String name) {
 		this.name = name;
 	}
 	/* All objects except the name NEVER should be setted with a setter */
-
+	
 	public UID getId() {
 		return id;
 	}
-
+	
 	public ArrayList<ImgModel> getPhotolist() {
 		return photolist;
 	}
-
+	
 	public ArrayList<PhotoList> getSublists() {
 		return sublists;
 	}
-
+	
 	public DataModel getData() {
 		return data;
 	}
 	/* Business Methods */
+	public boolean contains(id){
+		boolean ret = false;
+		for(ImgModel im : this.getPhotolist())
+		{
+			ret = ret || (im.getId().equals(id));
+		}
+		if(!this.getSublists().isEmpty()))
+		for(PhotoList pl : this.getSublists())
+			ret = ret || pl.contains(id);
+	}
+	
 	public String toJSON() {
-
+		
 		JsonObject ret = this.getJsonObject();
 		return ret.toString();
 		
@@ -70,7 +81,7 @@ public class PhotoList{
 		for(ImgModel im : this.getPhotolist())
 			allPhotos.add(im.getJsonObject());
 		inside.add("data", allPhotos.toArray());
-
+		
 		ret.add(this.getName(), inside);
 		for(PhotoList pl : this.getSublists())
 			ret.add(pl.getName(), pl.getJsonObject());
