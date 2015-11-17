@@ -8,10 +8,11 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import controller.Controller;
+import controller.PhotoListCtrl;
 
 public class Main{
 	
-	static Controller myController = new Controller();
+	private static Controller pLController = new PhotoListCtrl();
 	
 	public static void main(String args[]) throws Exception{
 		
@@ -74,7 +75,11 @@ public class Main{
 				System.out.println("The file "+file+" could not be opened , it is not an image");
 			}
 			// ---------  Call function for OCR
-			result = myController.findNumber(file);
+			
+			UUID galleryId = pLController.add("dummyGallery", null);
+			UUID imgId = plController.add(galleryId, file);
+			String result = plController.imgProcessing(imgId);
+			
 			if(optionV){
 				System.out.println("File " + file + " done");
 			}
