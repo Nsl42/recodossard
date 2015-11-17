@@ -8,58 +8,63 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
-import controller.Controller;
 import controller.PhotoListCtrl;
 import controller.ProcessingCtrl;
 
 public class Main{
+
+	private static PhotoListCtrl photoListController = new PhotoListCtrl();
+	private static ProcessingCtrl processingController = new ProcessingCtrl();
+
+	private static boolean debugIsEnabled = false;
+	private static boolean verboseIsEnabled  = false;
 	
-	private static PhotoListCtrl pLController = new PhotoListCtrl();
-	private static ProcessingCtrl processingCtrl = new ProcessingCtrl();
-	
+	private static void usage() {
+		System.out.println("Usage : java Main [-h] [--help] [-v] <image file> [<output file>]");
+	}
+
 	public static void main(String args[]) throws Exception{
-		
+
 		ArrayList<Integer> res = new ArrayList();
-		boolean optionVactive=false;
+
 		if (args.length == 0) {
-			System.out.println("Usage : java Main [-h] [--help] [-v] <image file> [<output file>]");
-		
-		}else if (args.length == 1){
+			usage();
+		} else if (args.length == 1) {
 			File file = new File(args[0]);
 			if(args[0].equals("-h") || args[0].equals("--help") || args[0].equals("-v")){
-				System.out.println("Usage : java Main [-h] [--help] [-v] <image file> [<output file>]");
+				usage();
 			}else if (file.exists() & file.isFile()){ //fichier
-				res = analyseFile(args[0], optionVactive);
+				res = analyseFile(args[0]);
 			}else if(file.exists() & file.isDirectory()){ //répertoire
-				res = analyseDirectory(args[0], optionVactive, res);
+				res = analyseDirectory(args[0], res);
 			}else{
-				System.out.println("Usage : java Main [-h] [--help] [-v] <image file> [<output file>]");
+				usage();
 			}
-		
+
 		}else if(args.length == 2){
 			File file = new File(args[0]);
 			if(args[0].equals("-v")){
-				optionVactive=true;
+				verboseIsEnabled = true;
 				file = new File(args[1]);
 				if(file.exists() & file.isFile()) { // fichier
-					res = analyseFile(args[1], optionVactive);
+					res = analyseFile(args[1]);
 				}else if (file.exists() & file.isDirectory()) { //repertoire
-					res = analyseDirectory(args[1], optionVactive, res);
+					res = analyseDirectory(args[1], res);
 				}else{
-					System.out.println("Err: File doesn't exsit");
-					System.out.println("Usage : java Main [-h] [--help] [-v] <image file> [<output file>]");
+					System.err.println("Err: File doesn't exsit");
+					usage();
 				}
 			}else if(file.exists() & file.isFile()) { //fichier
-				res=analyseFile(args[0], optionVactive);
+				res=analyseFile(args[0]);
 			}else if(file.exists() & file.isDirectory()) { //repertoire
-				res = analyseDirectory(args[0], optionVactive, res);
+				res = analyseDirectory(args[0], res);
 			}else{
-				System.out.println("Err: File doesn't exsit");
-				System.out.println("Usage : java Main [-h] [--help] [-v] <image file> [<output file>]");
+				System.err.println("Err: File doesn't exsit");
+				usage();
 			}
-		
+
 		}else{
-			System.out.println("Usage : java Main [-h] [--help] [-v] <image file> [<output file>]");
+			usage();
 		}
 		if(!res.isEmpty()){
 			for(int i=0; i < res.size(); i++){
@@ -67,8 +72,9 @@ public class Main{
 			}
 		}
 	}
-
-	public static ArrayList<Integer> analyseFile(String file, boolean optionV) throws Exception{
+	
+	
+	public static ArrayList<Integer> analyseFile(String file) throws Exception{
 		boolean valid=true;
 		ArrayList<Integer> result = new ArrayList<Integer>();
 		try {
@@ -78,54 +84,53 @@ public class Main{
 				System.out.println("The file "+file+" could not be opened , it is not an image");
 			}
 			// ---------  Call function for OCR
-			
-			UUID galleryId = pLController.add("dummyGallery");
-			UUID imgId = pLController.addPhotoToPhotoList(galleryId, file);
-			String results = processingCtrl.imgProcessing(imgId);
+
+			UUID galleryId = photoListController.add("dummyGallery");
+			UUID imgId = photoListController.addPhotoToPhotoList(galleryId, file);
+			String results = processingController.imgProcessing(imgId);
 			System.out.println(results);
-			
-			if(optionV){
+
+			if(verboseIsEnabled){
 				System.out.println("File " + file + " done");
 			}
 		} catch(IOException ex) {
 			valid=false;
 			System.out.println("The file "+file+" could not be opened , an error occurred.");
 		}
-		
+
 		return result; // return arrayList with number of bibs 
 	}
 
-	public static ArrayList<Integer> analyseDirectory(String directory, boolean optionV, ArrayList<Integer> result){
-        File file = new File(directory);
-        File[] files = file.listFiles();
-        ArrayList<Integer> res;
-        if (result.isEmpty()){
-        	res = new ArrayList();
-        }else {
-        	res = result;
-        }
-        if (files != null) {
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].isDirectory() == true) {
-                	res = analyseDirectory(files[i].getAbsolutePath(), optionV, res);
-                } else {
-                	try {
-            			Image image=ImageIO.read(files[i]);
-            			if (image == null) {
-            				System.out.println("The file "+files[i]+" could not be opened , it is not an image");
-            			}
-            			// ---------  Call function for OCR
-            			if(optionV){
-            				System.out.println("File " + files[i] + " done");
-            			}
-            		} catch(IOException ex) {
-            			System.out.println("The file "+files[i]+" could not be opened , an error occurred.");
-            		}
-                }
-            }
-        }
+	public static ArrayList<Integer> analyseDirectory(String directory, ArrayList<Integer> result){
+		File file = new File(directory);
+		File[] files = file.listFiles();
+		ArrayList<Integer> res;
+		if (result.isEmpty()){
+			res = new ArrayList();
+		}else {
+			res = result;
+		}
+		if (files != null) {
+			for (int i = 0; i < files.length; i++) {
+				if (files[i].isDirectory() == true) {
+					res = analyseDirectory(files[i].getAbsolutePath(), res);
+				} else {
+					try {
+						Image image=ImageIO.read(files[i]);
+						if (image == null) {
+							System.err.println("The file "+files[i]+" could not be opened , it is not an image");
+						}
+						// ---------  Call function for OCR
+						if(verboseIsEnabled){
+							System.out.println("File " + files[i] + " done");
+						}
+					} catch(IOException ex) {
+						System.err.println("The file "+files[i]+" could not be opened , an error occurred.");
+					}
+				}
+			}
+		}
 		return res;
 	}
-
 }
 
