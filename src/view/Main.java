@@ -74,7 +74,7 @@ public class Main{
 	}
 	
 	
-	public static ArrayList<Integer> analyseFile(String file) throws Exception{
+	public static ArrayList<Integer> analyseFile(String file) {
 		boolean valid=true;
 		ArrayList<Integer> result = new ArrayList<Integer>();
 		try {
@@ -118,12 +118,14 @@ public class Main{
 					try {
 						Image image=ImageIO.read(files[i]);
 						if (image == null) {
-							System.err.println("The file "+files[i]+" could not be opened , it is not an image");
+							System.err.println("The file " +
+									""+files[i]+" could not be opened , it is not an image");
 						}
 						// ---------  Call function for OCR
-						if(verboseIsEnabled){
+						analyseFile(files[i].getAbsolutePath());
+						/*if(verboseIsEnabled){
 							System.out.println("File " + files[i] + " done");
-						}
+						}*/
 					} catch(IOException ex) {
 						System.err.println("The file "+files[i]+" could not be opened , an error occurred.");
 					}
