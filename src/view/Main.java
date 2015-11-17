@@ -4,15 +4,18 @@ import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
 import controller.Controller;
 import controller.PhotoListCtrl;
+import controller.ProcessingCtrl;
 
 public class Main{
 	
-	private static Controller pLController = new PhotoListCtrl();
+	private static PhotoListCtrl pLController = new PhotoListCtrl();
+	private static ProcessingCtrl processingCtrl = new ProcessingCtrl();
 	
 	public static void main(String args[]) throws Exception{
 		
@@ -76,9 +79,10 @@ public class Main{
 			}
 			// ---------  Call function for OCR
 			
-			UUID galleryId = pLController.add("dummyGallery", null);
-			UUID imgId = plController.add(galleryId, file);
-			String result = plController.imgProcessing(imgId);
+			UUID galleryId = pLController.add("dummyGallery");
+			UUID imgId = pLController.addPhotoToPhotoList(galleryId, file);
+			String results = processingCtrl.imgProcessing(imgId);
+			System.out.println(results);
 			
 			if(optionV){
 				System.out.println("File " + file + " done");

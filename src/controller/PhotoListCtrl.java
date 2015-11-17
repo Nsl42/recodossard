@@ -8,7 +8,7 @@ public class PhotoListCtrl extends Controller {
 	
 	public void write(String name, String pathToJSON) {}
 	
-	public UUID add(String name, ArrayList<String> photoPat) {
+	public UUID add(String name) {
 		PhotoList pl = new PhotoList(name);
 		loadedPhotoLists.put(pl.getId(), pl);
 		return  pl.getId();
