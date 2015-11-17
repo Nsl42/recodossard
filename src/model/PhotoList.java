@@ -2,8 +2,12 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Random;
+
 import java.util.UUID;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 public class PhotoList{
 	private UUID id;
@@ -32,7 +36,7 @@ public class PhotoList{
 	}
 	/* All objects except the name NEVER should be setted with a setter */
 	
-	public UID getId() {
+	public UUID getId() {
 		return id;
 	}
 	
@@ -48,6 +52,11 @@ public class PhotoList{
 		return data;
 	}
 	/* Business Methods */
+	public UUID addPhoto(String path) {
+		ImgModel np = new ImgModel(path);
+		this.photolist.add(np);
+		return np.getId();
+	}
 	public boolean contains(UUID id){
 		boolean ret = false;
 		for(ImgModel im : this.getPhotolist())
@@ -68,24 +77,24 @@ public class PhotoList{
 	}
 	public JsonObject getJsonObject()
 	{
-		JsonObject ret = Json.createObjectBuilder();
-		JsonObject inside = Json.createObjectBuilder();
-		inside.add("ID", this.getId());
+		JsonObjectBuilder ret =  Json.createObjectBuilder();
+		JsonObjectBuilder inside = Json.createObjectBuilder();
+		inside.add("ID", this.getId().toString());
 		inside.add("DataModel", this.getData().getJsonObject());
 		// Sublist array creation
-		ArrayList<String> subIDS = new ArrayList<String>();
+		JsonArrayBuilder jab = Json.createArrayBuilder();
 		for(PhotoList pl : this.getSublists())
-			subIDS.add(pl.getId().toString());
-		inside.add("sublists", subIDS.toArray());
+			jab.add(pl.getId().toString());
+		inside.add("sublists", jab.build());
 		// Photos array creation
-		ArrayList<JsonObject> allPhotos = new ArrayList<JsonObject>();
+		JsonArrayBuilder jabPhotos = Json.createArrayBuilder();
 		for(ImgModel im : this.getPhotolist())
-			allPhotos.add(im.getJsonObject());
-		inside.add("data", allPhotos.toArray());
+			jabPhotos.add(im.getJsonObject());
+		inside.add("data", jabPhotos.build());
 		
 		ret.add(this.getName(), inside);
 		for(PhotoList pl : this.getSublists())
 			ret.add(pl.getName(), pl.getJsonObject());
-		return ret;
+		return ret.build();
 	}
 }

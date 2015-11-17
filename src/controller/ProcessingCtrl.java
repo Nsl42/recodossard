@@ -2,6 +2,9 @@ package controller;
 
 import java.util.ArrayList;
 import java.util.UUID;
+import model.CVOCR;
+import model.ImgModel;
+import model.PhotoList;
 
 public class ProcessingCtrl extends Controller {
 	
@@ -33,11 +36,20 @@ public class ProcessingCtrl extends Controller {
 	}
 	public String imgProcessing(UUID imgID)
 	{
-		return ProcessingCtrl.loadedPhotoLists.get(getPlidFromImgid(imgID)).process();
+		CVOCR cvocr = new CVOCR();
+		PhotoList pl = ProcessingCtrl.loadedPhotoLists.get(getPlidFromImgid(imgID));
+		ImgModel to_ret = null;
+		for(ImgModel im : pl.getPhotolist())
+			if(im.getId().equals(imgID))
+			{
+				to_ret = im;
+				cvocr.launchDetection(false, im.getPath());
+			}
+		return to_ret.toJSON();
 	}
 	public String listProcessing(UUID photoListID)
 	{
-		return ProcessingCtrl.loadedPhotoLists.get(photoListID).process();
+		return "i";
 	}
 
 }

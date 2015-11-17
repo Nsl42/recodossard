@@ -11,51 +11,61 @@ package model;
  */
 public class Settings {
 	
-	private boolean EXIF;
-	private boolean ADDITONNAL_DATA;
-	private boolean BENCH;
-	private String ALGO;
+	public enum Algo{
+		DEFAULT,
+		MANUAL;
+	}
+		
+	static private boolean EXIF = false;
+	static private boolean ADDITONNAL_DATA = false;
+	static private boolean BENCH = false;
+	static private boolean DEBUG = false;
+	static private Algo ALGO = Algo.DEFAULT;
 
-	public boolean getEXIF() {
-		return EXIF;
+	static public boolean getEXIF() {
+		return Settings.EXIF;
 	}
 
-	public void setEXIF(boolean EXIF) {
-		this.EXIF = EXIF;
+	static private void setEXIF(boolean EXIF) {
+		Settings.EXIF = EXIF;
 	}
 
-	public boolean getADDITONNAL_DATA() {
+	static public boolean getADDITONNAL_DATA() {
 		return ADDITONNAL_DATA;
 	}
 
-	public void setADDITONNAL_DATA(boolean ADDITONNAL_DATA) {
-		this.ADDITONNAL_DATA = ADDITONNAL_DATA;
-	}
+	static private void setADDITONNAL_DATA(boolean ADDITONNAL_DATA) { Settings.ADDITONNAL_DATA = ADDITONNAL_DATA; }
 
-	public boolean getBENCH() {
+	static public boolean getBENCH() {
 		return BENCH;
 	}
 
-	public void setBENCH(boolean BENCH) {
-		this.BENCH = BENCH;
+	static private void setBENCH(boolean BENCH) {
+		Settings.BENCH = BENCH;
 	}
 
-	public String getALGO() {
+	static public boolean getDEBUG() {
+		return DEBUG;
+	}
+
+	static private void setDEBUG(boolean DEBUG) {
+		Settings.DEBUG = DEBUG;
+	}
+
+	static public Algo getALGO() {
 		return ALGO;
 	}
 
-	public void setALGO(String ALGO) {
-		this.ALGO = ALGO;
+	static private void setALGO(Algo ALGO) {
+		Settings.ALGO = ALGO;
 	}
-	
-	/* Business Methods */
-	public JsonObject getJSONObject()
+	static public void setSettings(boolean exif, boolean data, boolean bench, boolean debug, Algo algo)
 	{
-			JsonObject ret = Json.createObjectBuilder();
-			ret.add("EXIF", this.EXIF);
-			ret.add("ADDITONNAL_DATA", this.ADDITONNAL_DATA);
-			ret.add("BENCH", this.BENCH);
-			ret.add("ALGO", this.ALGO);
-			return ret;
+		Settings.setEXIF(exif);
+		Settings.setADDITONNAL_DATA(data);
+		Settings.setBENCH(bench);
+		Settings.setDEBUG(debug);
+		Settings.setALGO(algo);
+
 	}
 }
