@@ -75,12 +75,10 @@ public class Main{
 	
 	
 	public static ArrayList<Integer> analyseFile(String file) {
-		boolean valid=true;
 		ArrayList<Integer> result = new ArrayList<Integer>();
 		try {
 			Image image=ImageIO.read(new File(file));
 			if (image == null) {
-				valid = false;
 				System.out.println("The file "+file+" could not be opened , it is not an image");
 			}
 			// ---------  Call function for OCR
@@ -94,8 +92,7 @@ public class Main{
 				System.out.println("File " + file + " done");
 			}
 		} catch(IOException ex) {
-			valid=false;
-			System.out.println("The file "+file+" could not be opened , an error occurred.");
+			System.err.println("The file "+file+" could not be opened , an error occurred.");
 		}
 
 		return result; // return arrayList with number of bibs 

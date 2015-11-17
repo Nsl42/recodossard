@@ -183,11 +183,24 @@ public class CVOCR {
 	// Getters ================================================================
 	
 	public ArrayList<Integer> launchDetection(Boolean enableDebug, ImgModel im) {
+		long startTime = 0 ;
+		if (Settings.getBENCH()) {
+			startTime = System.nanoTime();
+		}
+ 		
 		this.debugEnabled = enableDebug;
 		String path = im.getPath();
 		this.imageMat = Imgcodecs.imread(path);
 		this.imageGrayMat = this.imageMat.clone();
 		Imgproc.cvtColor(this.imageGrayMat, this.imageGrayMat, Imgproc.COLOR_BGR2GRAY);
+		
+		if (Settings.getBENCH()) {
+			long endTime = System.nanoTime();
+			long processTime = endTime - startTime;
+			BenchData bData = new BenchData();
+			bData.setProcTime((int) processTime);
+			im.seBenchData(bData);
+		}
 
 		ArrayList<Integer> results = getImageNumbers();
 		return results;
