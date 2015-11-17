@@ -43,7 +43,9 @@ public class ProcessingCtrl extends Controller {
 			if(im.getId().equals(imgID))
 			{
 				to_ret = im;
-				cvocr.launchDetection(false, im.getPath());
+				im.setProcessed(true);
+				ArrayList<Integer> result = cvocr.launchDetection(true, im);
+				im.getResult().addAll(result);
 			}
 		return to_ret.toJSON();
 	}

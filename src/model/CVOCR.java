@@ -182,14 +182,14 @@ public class CVOCR {
 	
 	// Getters ================================================================
 	
-	public ArrayList<Integer> launchDetection(Boolean enableDebug, String path) {
+	public ArrayList<Integer> launchDetection(Boolean enableDebug, ImgModel im) {
 		this.debugEnabled = enableDebug;
+		String path = im.getPath();
 		this.imageMat = Imgcodecs.imread(path);
 		this.imageGrayMat = this.imageMat.clone();
 		Imgproc.cvtColor(this.imageGrayMat, this.imageGrayMat, Imgproc.COLOR_BGR2GRAY);
 
 		ArrayList<Integer> results = getImageNumbers();
-		//System.out.println("results: " + results);
 		return results;
 	}
 

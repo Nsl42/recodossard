@@ -86,10 +86,11 @@ public class ImgModel{
 		JsonObjectBuilder inside = Json.createObjectBuilder();
 		//Number Array Builder
 		JsonArrayBuilder jab = Json.createArrayBuilder();
-		
-		Integer results[] = (Integer[])this.result.toArray();
+
+		int[] results = new int[this.result.size()];
 		for(int i = 0; i < this.result.size(); i++)
 		{
+			results[i] = this.result.get(i);
 			jab.add(results[i]);
 		}
 		JsonArray numbers;
