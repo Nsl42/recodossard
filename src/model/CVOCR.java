@@ -156,7 +156,7 @@ public class CVOCR {
 	/**
 	 * OCR Custom engine
 	 */
-	private NumberOCR customEngine;
+	//gprivate NumberOCR customEngine;
 
 	/**
 	 * Debug image count (use to save different image)
@@ -172,13 +172,8 @@ public class CVOCR {
 
 	// CONSTRUCTORS ===========================================================
 
-	public CVOCR(String path) {
+	public CVOCR() {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-
-		this.imageMat = Imgcodecs.imread(path);
-		this.imageGrayMat = this.imageMat.clone();
-		Imgproc.cvtColor(this.imageGrayMat, this.imageGrayMat, Imgproc.COLOR_BGR2GRAY);
-
 		//Face detector
 		this.faceDetector = new CascadeClassifier(CVOCRSettings.FACE_DETECTION_PATH);
 	}
@@ -187,8 +182,12 @@ public class CVOCR {
 	
 	// Getters ================================================================
 	
-	public ArrayList<Integer> launchDetection(Boolean enableDebug) {
+	public ArrayList<Integer> launchDetection(Boolean enableDebug, String path) {
 		this.debugEnabled = enableDebug;
+		this.imageMat = Imgcodecs.imread(path);
+		this.imageGrayMat = this.imageMat.clone();
+		Imgproc.cvtColor(this.imageGrayMat, this.imageGrayMat, Imgproc.COLOR_BGR2GRAY);
+
 		ArrayList<Integer> results = getImageNumbers();
 		//System.out.println("results: " + results);
 		return results;

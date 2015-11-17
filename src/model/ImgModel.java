@@ -5,7 +5,10 @@ import java.util.Random;
 import java.util.UUID;
 
 import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 public class ImgModel{
     
@@ -14,7 +17,6 @@ public class ImgModel{
     private ArrayList<Integer> result;
     private BenchData benchData;
     private boolean processed;
-    private Settings settings;
 
 
     public ImgModel(String pth){
@@ -52,8 +54,8 @@ public class ImgModel{
 		this.benchData = benchData;
 	}
 
-	/* ID, Result and Settings only have getters : One can perform some operations 
-	on result or settings by getting the object, and the ID should never be set 
+	/* ID, and Result only have getters : One can perform some operations 
+	on result by getting the object, and the ID should never be set 
 	somewhere else.
 	*/
 	public UUID getId() {
@@ -63,19 +65,10 @@ public class ImgModel{
 	public ArrayList<Integer> getResult() {
 		return result;
 	}
-
-	public Settings getSettings() {
-		return settings;
-	}
     
     
  
 	/* Business Methods */
-	
-	public void process() {
-		CVOCR cvocr = new CVOCR(path);
-		cvocr.launchDetection(false);
-	}
 
 	/**
 	 * toJSON() : Returns the object as a JSON string
@@ -90,15 +83,27 @@ public class ImgModel{
 	 */
 	public JsonObject getJsonObject() {
 		
-		JsonObject ret = (JsonObject) Json.createObjectBuilder();
-		JsonObject inside = (JsonObject) Json.createObjectBuilder();
-		inside.add(this.path, this.result.toArray());
-		inside.add("processed", this.processed);
-		// Writing the benchmarking data
-		if(benchData != null)
+		JsonObjectBuilder inside = Json.createObjectBuilder();
+		//Number Array Builder
+		JsonArrayBuilder jab = Json.createArrayBuilder();
+		
+		Integer results[] = (Integer[])this.result.toArray();
+		for(int i = 0; i < this.result.size(); i++)
+		{
+			jab.add(results[i]);
+		}
+		JsonArray numbers;
+	    numbers = jab.build();
+		//Adding path, results, processed...
+		inside.add(this.path, numbers).
+		add("processed", this.processed);
+		// BenchData addendum
+		if(benchData != null) {
 			inside.add("benchData", this.benchData.getJSONObject());
-		inside.add("settings", this.settings.getJSONObject());
-		ret.add(this.id.toString(), inside);
+		}
+
+		JsonObject ret = Json.createObjectBuilder()
+			.add(this.id.toString(), inside).build();
 		return ret;
 	}
 }

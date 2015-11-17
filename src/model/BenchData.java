@@ -5,6 +5,9 @@
  */
 package model;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+
 /**
  *
  * @author nsl
@@ -41,9 +44,10 @@ class BenchData {
 	/* Business Methods */
 	public JsonObject getJSONObject()
 	{
-			JsonObject ret = Json.createObjectBuilder();
-			ret.add("ProcTime", benchData.getProcTime());
-			ret.add("FauxPositif", benchData.isFauxPositif());
-			ret.add("FauxNegatif", benchData.isFauxNegatif());
+			JsonObject ret = Json.createObjectBuilder()
+			.add("ProcTime", this.getProcTime())
+			.add("FauxPositif", this.isFauxPositif())
+			.add("FauxNegatif", this.isFauxNegatif()).build();
+			return ret;
 	}
 }
