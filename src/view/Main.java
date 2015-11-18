@@ -102,6 +102,7 @@ public class Main{
 		return result; // return arrayList with number of bibs 
 	}
 
+
 	public static ArrayList<String> analyseDirectory(String directory){
 		File file = new File(directory);
 		File[] files = file.listFiles();
