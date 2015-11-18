@@ -8,6 +8,15 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.MissingArgumentException;
+import org.apache.commons.cli.Options;
+
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
+
 import controller.PhotoListCtrl;
 import controller.ProcessingCtrl;
 
@@ -16,34 +25,33 @@ public class Main{
 	private static PhotoListCtrl photoListController = new PhotoListCtrl();
 	private static ProcessingCtrl processingController = new ProcessingCtrl();
 
+	private static Options options = new Options();
 	private static boolean debugIsEnabled = false;
 	private static boolean verboseIsEnabled  = false;
-	
+	private static boolean benchmarkIsEnabled = false;
+
 	private static void usage() {
-		System.out.println("Usage : java Main [-h] [--help] [-v] <image file> [<output file>]");
+		HelpFormatter formatter = new HelpFormatter();
+		formatter.printHelp( "java Main [-h] [--help] [-v] <image file> [<output file>]"
+				, options );
 	}
 
 	public static void main(String args[]) throws Exception{
 
-		ArrayList<Integer> res = new ArrayList();
+		options.addOption("h","help",false, "Display the help.");
+		options.addOption("v", "verbose", false, "Display more messages.");
+		options.addOption("f", "file", true, "Image or directory to analyse.");
+		options.addOption("d", "debug", false, "Image or directory to analyse.");
 
-		if (args.length == 0) {
-			usage();
-		} else if (args.length == 1) {
-			File file = new File(args[0]);
-			if(args[0].equals("-h") || args[0].equals("--help") || args[0].equals("-v")){
-				usage();
-			}else if (file.exists() & file.isFile()){ //fichier
-				res = analyseFile(args[0]);
-			}else if(file.exists() & file.isDirectory()){ //répertoire
-				res = analyseDirectory(args[0]);
-			}else{
+		File file = null;
+
+		CommandLineParser parser = new DefaultParser();
+		try {
+			CommandLine line = parser.parse(options, args);
+			if (line.hasOption("h")) {
 				usage();
 			}
-
-		}else if(args.length == 2){
-			File file = new File(args[0]);
-			if(args[0].equals("-v")){
+			if (line.hasOption("v")) {
 				verboseIsEnabled = true;
 				file = new File(args[1]);
 				if(file.exists() & file.isFile()) { // fichier
@@ -62,50 +70,43 @@ public class Main{
 				System.err.println("Err: File doesn't exsit");
 				usage();
 			}
+			if (line.hasOption("f")) {
+				file = new File(line.getOptionValue("f"));
+			}
+			if (line.hasOption("d")) {
+				debugIsEnabled = true;
+			}
 
-		}else{
+		} catch(MissingArgumentException e) {
+			System.err.println("Option <" + e.getOption().getOpt() + "> need an argument!");
 			usage();
+			System.exit(1);
+		} catch(ParseException e) {
+			System.out.println( "Unexpected exception:" + e.getMessage() );
 		}
-		if(!res.isEmpty()){
-			for(int i=0; i < res.size(); i++){
-				System.out.println(res.get(i));
-			}
+		
+		processingController.setProcessSettings(false, false, benchmarkIsEnabled, debugIsEnabled);
+
+		if (file.isDirectory()) {
+			ArrayList<String> res = analyseDirectory(file.getAbsolutePath());
+			System.out.println(res.toString());			
+		} else {
+			String res = analyseFile(file);
+			System.out.println(res);
 		}
 	}
-	
-	
-	public static ArrayList<Integer> analyseDirectory(String dirpath) {
-		ArrayList<Integer> res = new ArrayList<Integer>();
-		try{
-			File dir = new File(dirpath);
-			File[] files = dir.listFiles();
-			UUID galleryId = photoListController.add(dirpath.split("/")[dirpath.split("/").length - 1]);
-			for(int i = 0; i < files.length ; i++)
-			    photoListController.addPhotoToPhotoList(galleryId, files[i].getPath());
-			String result = processingController.listProcessing(galleryId);
-			photoListController.writelist(galleryId, "TOTOLEPLUSBEAU");
-			
 
-		} catch(Exception e) {System.out.println("The JSON file could not be written"); e.printStackTrace(); }
-
-		return res;
-	}
-	public static ArrayList<Integer> analyseFile(String file) {
-		ArrayList<Integer> result = new ArrayList<Integer>();
+	public static String analyseFile(File file) {
+		String result = null;
 		try {
-			Image image=ImageIO.read(new File(file));
+			Image image=ImageIO.read(file);
 			if (image == null) {
-				System.out.println("The file "+file+" could not be opened , it is not an image");
+				System.err.println("The file "+file.getAbsolutePath()+" could not be opened , it is not an image");
 			}
-			// ---------  Call function for OCR
 
 			UUID galleryId = photoListController.add("dummyGallery");
-			UUID imgId = photoListController.addPhotoToPhotoList(galleryId, file);
-			String results = processingController.imgProcessing(imgId);
-			try{
-			photoListController.writeimg(imgId, "TOTOLEPLUSBEAU");
-			} catch(Exception e) {System.out.println("The JSON file could not be written"); e.printStackTrace(); }
-			System.out.println(results);
+			UUID imgId = photoListController.addPhotoToPhotoList(galleryId, file.getAbsolutePath());
+			result = processingController.imgProcessing(imgId);
 
 			if(verboseIsEnabled){
 				System.out.println("File " + file + " done");
@@ -116,40 +117,21 @@ public class Main{
 
 		return result; // return arrayList with number of bibs 
 	}
-/*
-	public static ArrayList<Integer> analyseDirectory(String directory, ArrayList<Integer> result){
+	public static ArrayList<String> analyseDirectory(String directory){
 		File file = new File(directory);
 		File[] files = file.listFiles();
-		ArrayList<Integer> res;
-		if (result.isEmpty()){
-			res = new ArrayList();
-		}else {
-			res = result;
-		}
+		ArrayList<String> results = new ArrayList<String>();
+
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
 				if (files[i].isDirectory() == true) {
-					res = analyseDirectory(files[i].getAbsolutePath(), res);
+					results.addAll(analyseDirectory(files[i].getAbsolutePath()));
 				} else {
-					try {
-						Image image=ImageIO.read(files[i]);
-						if (image == null) {
-							System.err.println("The file " +
-									""+files[i]+" could not be opened , it is not an image");
-						}
-						// ---------  Call function for OCR
-						analyseFile(files[i].getAbsolutePath());
-						/*if(verboseIsEnabled){
-							System.out.println("File " + files[i] + " done");
-						}*//*
-					} catch(IOException ex) {
-						System.err.println("The file "+files[i]+" could not be opened , an error occurred.");
-					}
+					results.add(analyseFile(files[i]));
 				}
 			}
 		}
-		return res;
+		return results;
 	}
-*/
 }
 

@@ -5,10 +5,14 @@ import java.util.UUID;
 import model.CVOCR;
 import model.ImgModel;
 import model.PhotoList;
+import model.Settings;
 
 public class ProcessingCtrl extends Controller {
 	
-	
+	// TODO: set Algo
+	public void setProcessSettings(boolean exif, boolean data, boolean bench, boolean debug) {
+		Settings.setSettings(exif, data, bench, debug, null);
+	}
 
 	public String getName(int bibNumber) {
 		return "0";
@@ -21,6 +25,7 @@ public class ProcessingCtrl extends Controller {
 	public ArrayList<Integer> getBibsNumber(UUID idPhoto) {
 		return null;
 	}
+	
 	public UUID getPlidFromImgid(UUID imgId)
 	{
 		UUID ret = null;
@@ -34,6 +39,7 @@ public class ProcessingCtrl extends Controller {
 		}
 		return ret;
 	}
+	
 	public String imgProcessing(UUID imgID)
 	{
 		CVOCR cvocr = new CVOCR();
@@ -49,6 +55,7 @@ public class ProcessingCtrl extends Controller {
 			}
 		return to_ret.toJSON();
 	}
+	
 	public String listProcessing(UUID photoListID)
 	{
 		String ret = "";
