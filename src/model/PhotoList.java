@@ -57,6 +57,14 @@ public class PhotoList{
 		this.photolist.add(np);
 		return np.getId();
 	}
+	public ImgModel getPhoto(UUID photoId)
+	{
+		ImgModel ret = null;
+		for(ImgModel im : this.getPhotolist())
+			if(photoId.equals(im.getId()))
+				ret = im;
+		return ret;
+	}
 	public boolean contains(UUID id){
 		boolean ret = false;
 		for(ImgModel im : this.getPhotolist())
@@ -80,7 +88,8 @@ public class PhotoList{
 		JsonObjectBuilder ret =  Json.createObjectBuilder();
 		JsonObjectBuilder inside = Json.createObjectBuilder();
 		inside.add("ID", this.getId().toString());
-		inside.add("DataModel", this.getData().getJsonObject());
+		if(Settings.getEXIF())
+			inside.add("DataModel", this.getData().getJsonObject());
 		// Sublist array creation
 		JsonArrayBuilder jab = Json.createArrayBuilder();
 		for(PhotoList pl : this.getSublists())

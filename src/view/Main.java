@@ -36,7 +36,7 @@ public class Main{
 			}else if (file.exists() & file.isFile()){ //fichier
 				res = analyseFile(args[0]);
 			}else if(file.exists() & file.isDirectory()){ //répertoire
-				res = analyseDirectory(args[0], res);
+				res = analyseDirectory(args[0]);
 			}else{
 				usage();
 			}
@@ -49,7 +49,7 @@ public class Main{
 				if(file.exists() & file.isFile()) { // fichier
 					res = analyseFile(args[1]);
 				}else if (file.exists() & file.isDirectory()) { //repertoire
-					res = analyseDirectory(args[1], res);
+					res = analyseDirectory(args[1]);
 				}else{
 					System.err.println("Err: File doesn't exsit");
 					usage();
@@ -57,7 +57,7 @@ public class Main{
 			}else if(file.exists() & file.isFile()) { //fichier
 				res=analyseFile(args[0]);
 			}else if(file.exists() & file.isDirectory()) { //repertoire
-				res = analyseDirectory(args[0], res);
+				res = analyseDirectory(args[0]);
 			}else{
 				System.err.println("Err: File doesn't exsit");
 				usage();
@@ -74,6 +74,22 @@ public class Main{
 	}
 	
 	
+	public static ArrayList<Integer> analyseDirectory(String dirpath) {
+		ArrayList<Integer> res = new ArrayList<Integer>();
+		try{
+			File dir = new File(dirpath);
+			File[] files = dir.listFiles();
+			UUID galleryId = photoListController.add(dirpath.split("/")[dirpath.split("/").length - 1]);
+			for(int i = 0; i < files.length ; i++)
+			    photoListController.addPhotoToPhotoList(galleryId, files[i].getPath());
+			String result = processingController.listProcessing(galleryId);
+			photoListController.writelist(galleryId, "TOTOLEPLUSBEAU");
+			
+
+		} catch(Exception e) {System.out.println("The JSON file could not be written"); e.printStackTrace(); }
+
+		return res;
+	}
 	public static ArrayList<Integer> analyseFile(String file) {
 		ArrayList<Integer> result = new ArrayList<Integer>();
 		try {
@@ -86,6 +102,9 @@ public class Main{
 			UUID galleryId = photoListController.add("dummyGallery");
 			UUID imgId = photoListController.addPhotoToPhotoList(galleryId, file);
 			String results = processingController.imgProcessing(imgId);
+			try{
+			photoListController.writeimg(imgId, "TOTOLEPLUSBEAU");
+			} catch(Exception e) {System.out.println("The JSON file could not be written"); e.printStackTrace(); }
 			System.out.println(results);
 
 			if(verboseIsEnabled){
@@ -97,7 +116,7 @@ public class Main{
 
 		return result; // return arrayList with number of bibs 
 	}
-
+/*
 	public static ArrayList<Integer> analyseDirectory(String directory, ArrayList<Integer> result){
 		File file = new File(directory);
 		File[] files = file.listFiles();
@@ -122,7 +141,7 @@ public class Main{
 						analyseFile(files[i].getAbsolutePath());
 						/*if(verboseIsEnabled){
 							System.out.println("File " + files[i] + " done");
-						}*/
+						}*//*
 					} catch(IOException ex) {
 						System.err.println("The file "+files[i]+" could not be opened , an error occurred.");
 					}
@@ -131,5 +150,6 @@ public class Main{
 		}
 		return res;
 	}
+*/
 }
 

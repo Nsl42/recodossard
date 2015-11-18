@@ -51,7 +51,17 @@ public class ProcessingCtrl extends Controller {
 	}
 	public String listProcessing(UUID photoListID)
 	{
-		return "i";
+		String ret = "";
+		CVOCR cvocr = new CVOCR();
+		PhotoList pl = ProcessingCtrl.loadedPhotoLists.get(photoListID);
+		ImgModel to_ret = null;
+		for(ImgModel im : pl.getPhotolist())
+		{
+				to_ret = im;
+				to_ret.setProcessed(true);
+				to_ret.getResult().addAll(cvocr.launchDetection(true, im));
+		}
+		return pl.toJSON();
 	}
 
 }
