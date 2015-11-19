@@ -294,8 +294,18 @@ public class GUI extends JFrame{
 	 * Add in indexPicSelected list the object selected
 	 * @param object
 	 */
-	private static void labPicActionPerformed(Object object) {
-		indexPicSelected.add((JLabel) object);
+	private static void labPicActionPerformed(Object object) {		
+		if (indexPicSelected.contains(object)) {
+			indexPicSelected.remove(object);
+		} else {
+			indexPicSelected.add((JLabel) object);
+		}
+		for (JLabel myJLabel : listJLab) {
+			myJLabel.setBackground(null);
+		}
+		for (JLabel myJLabel : indexPicSelected) {
+			myJLabel.setBackground(Color.BLUE);
+		}
 	}
 
 	/**
