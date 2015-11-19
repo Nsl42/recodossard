@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -54,7 +55,14 @@ public class GUI extends JFrame{
 	private static ArrayList<JLabel> indexPicSelected = new ArrayList<JLabel>();
 	static ArrayList<File> list;
 	static JLabel labPic;
-
+	static JLabel picAnalyzed;
+	static JLabel success;
+	static JLabel fail;
+	static JLabel advancedOptions;
+	static JCheckBox dataEXIF;
+	static JCheckBox raceData;
+	static JLabel location;
+	static HashMap<JLabel, String> mapLabPath = new HashMap<JLabel, String>();
 
 	/**
 	 * Constructor
@@ -125,7 +133,6 @@ public class GUI extends JFrame{
 			jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 			jScrollPane.setPreferredSize(new Dimension(36*width/100, 70*height/100));
 			galPicture.setLayout(gl);
-
 			mainPanel.add(jScrollPane, gbc);
 
 			gbc.gridx = 1;
@@ -137,14 +144,15 @@ public class GUI extends JFrame{
 			String data = "Datas";
 			String analyze = "Analyze";
 			tabbedPane = new JTabbedPane();
+			tabbedPane.setVisible(false);
 			card1 = new JPanel();
 			card1.setLayout(new BoxLayout(card1, BoxLayout.Y_AXIS));
-			JLabel picAnalyzed = new JLabel("Pictures analyzed : ../..");
-			JLabel success = new JLabel("Success : ../..");
-			JLabel fail = new JLabel("Fail : ../..");
-			JLabel advancedOptions = new JLabel("Advanced Options");
-			JCheckBox dataEXIF = new JCheckBox("EXIF data");
-			JCheckBox raceData = new JCheckBox("Race data");
+			picAnalyzed = new JLabel("Pictures analyzed : ../..");
+			success = new JLabel("Success : ../..");
+			fail = new JLabel("Fail : ../..");
+			advancedOptions = new JLabel("Advanced Options");
+			dataEXIF = new JCheckBox("EXIF data");
+			raceData = new JCheckBox("Race data");
 			card1.add(picAnalyzed);
 			card1.add(Box.createVerticalStrut(10));
 			card1.add(success);
@@ -155,9 +163,16 @@ public class GUI extends JFrame{
 			card1.add(Box.createVerticalStrut(10));
 			card1.add(dataEXIF);
 			card1.add(raceData);
+			//card1.setVisible(false);
+			
 			card2 = new JPanel();
-			card2.add(new JLabel("2"));
-			card3 = new JPanel(new BorderLayout());
+			card2.setLayout(new BoxLayout(card2, BoxLayout.Y_AXIS));
+			//card2.add(new JLabel("2"));
+			location = new JLabel();
+			card2.add(location);
+			card2.setVisible(false);
+			card3 = new JPanel();
+			card3.setLayout(new BoxLayout(card3, BoxLayout.Y_AXIS));
 			pbaInit = new ProgressBarAnalyze(false, false);
 			pbaInit.setVisible(true);
 			card3.add(pbaInit);
@@ -284,10 +299,14 @@ public class GUI extends JFrame{
 	private static void addAnalyzeButtonActionListener(ActionEvent event){
 		ProgressBarAnalyze pba = new ProgressBarAnalyze(true, true);
 		pbaInit.setVisible(false);
+		tabbedPane.setVisible(true);
+		
 		JLabel nbPic = new JLabel("Picture"+"../..");
 		JLabel nbBib = new JLabel("Number of bibs founded : ");
 		card3.add(pba, BorderLayout.NORTH);
+		card3.add(Box.createVerticalStrut(10));
 		card3.add(nbPic, BorderLayout.CENTER);
+		card3.add(Box.createVerticalStrut(10));
 		card3.add(nbBib, BorderLayout.SOUTH);
 		tabbedPane.setSelectedIndex(2);
 
@@ -297,7 +316,8 @@ public class GUI extends JFrame{
 	 * Add in indexPicSelected list the object selected
 	 * @param object
 	 */
-	private static void labPicActionPerformed(Object object) {		
+	private static void labPicActionPerformed(Object object) {	
+		manageTabs(object);
 		if (indexPicSelected.contains(object)) {
 			indexPicSelected.remove(object);
 		} else {
@@ -354,6 +374,7 @@ public class GUI extends JFrame{
 					new ImageIcon(files.get(i).toString()).getImage().getScaledInstance(90, 90, Image.SCALE_SMOOTH)));
 			labPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 			labPic.setBorder(BorderFactory.createRaisedBevelBorder());
+			mapLabPath.put(labPic, files.get(i).getAbsolutePath());
 			listJLab.add(labPic);
 			labPic.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent me) {
@@ -371,6 +392,22 @@ public class GUI extends JFrame{
 		for(int i=0; i<l.size(); i++){
 			System.out.println("List "+i+" : "+l.get(i));
 		}
+	}
+	
+	private static void manageTabs(Object object){
+		JLabel lab = ((JLabel) object);
+		ImageIcon imgIcon = (ImageIcon) lab.getIcon();
+		tabbedPane.setSelectedIndex(0);
+		//set Labels of card1 and card2 :
+		// images analysées, succès, échecs, checkbox
+		location = new JLabel("Location : "+mapLabPath.get(lab).toString());
+		card2.add(location);
+		card2.add(new JSeparator(SwingConstants.HORIZONTAL));
+		card2.add(new JLabel("EXIF data"));
+		card2.add(Box.createVerticalStrut(10));
+		
+		tabbedPane.setVisible(true);
+		
 	}
 
 }
