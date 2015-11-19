@@ -65,7 +65,10 @@ public class GUI extends JFrame{
 
 		mainPanel = new JPanel();
 		boolean galleryIsExist = true;
-
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int width = 3*screenSize.width/4;
+		int height = 3*screenSize.height/4;
+		
 		if (galleryIsExist){
 			mainPanel.setLayout(new GridBagLayout());
 			gbc = new GridBagConstraints();
@@ -79,7 +82,8 @@ public class GUI extends JFrame{
 			gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			JLabel myGallery = new JLabel(" MyGallery");
-			myGallery.setPreferredSize(new Dimension(70,25));
+			System.out.println("My Gallery : "+width/5+" ; 25");
+			myGallery.setPreferredSize(new Dimension(7*width/100,25));
 			myGallery.setBorder(lineborder);
 			mainPanel.add(myGallery, gbc);
 
@@ -88,7 +92,8 @@ public class GUI extends JFrame{
 			gbc.gridheight = 3;
 			gbc.gridy = 1;
 			JLabel listGal = new JLabel(" List galleries");
-			listGal.setPreferredSize(new Dimension(70,350));
+			System.out.println("List galleries : "+width/5+" ; "+(height-50));
+			listGal.setPreferredSize(new Dimension(7*width/100, 58*height/100));
 			listGal.setBorder(lineborder);
 			mainPanel.add(listGal, gbc);
 
@@ -98,7 +103,8 @@ public class GUI extends JFrame{
 			gbc.gridy = 4;
 			gbc.anchor = GridBagConstraints.LAST_LINE_START;
 			JButton addGallery = new JButton("Add gallery");
-			addGallery.setPreferredSize(new Dimension(70,25));
+			System.out.println("Add gallery : "+width/5+" ; 25");
+			addGallery.setPreferredSize(new Dimension(7*width/100,25));
 			mainPanel.add(addGallery, gbc);
 
 			gbc.gridx = 1;
@@ -120,7 +126,8 @@ public class GUI extends JFrame{
 			gl.setVgap(10);
 			JScrollPane jScrollPane = new JScrollPane(galPicture);
 			jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-			jScrollPane.setPreferredSize(new Dimension(350,350));
+			System.out.println("Gal picture : "+4*width/5+" ; "+(2*height-25)/3);
+			jScrollPane.setPreferredSize(new Dimension(36*width/100, 58*height/100));
 			galPicture.setLayout(gl);
 
 			mainPanel.add(jScrollPane, gbc);
@@ -161,7 +168,8 @@ public class GUI extends JFrame{
 			tabbedPane.addTab(dataGal, card1);
 			tabbedPane.addTab(data,card2);
 			tabbedPane.addTab(analyze,card3);
-			tabbedPane.setPreferredSize(new Dimension(350, 180));
+			System.out.println("Onglet : "+4*width/5+" ; "+(height-25)/3);
+			tabbedPane.setPreferredSize(new Dimension(36*width/100, 30*height/100));
 			mainPanel.add(tabbedPane,gbc);
 
 			gbc.gridx = 3;
@@ -239,9 +247,9 @@ public class GUI extends JFrame{
 		}
 
 		add(mainPanel);
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	
 		
-		setSize(3*screenSize.width/4, 3*screenSize.height/4);
+		setSize(width, height);
 		setLocationRelativeTo(null);
 		setResizable(false);
 		setVisible(true);
