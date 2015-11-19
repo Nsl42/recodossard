@@ -82,7 +82,6 @@ public class GUI extends JFrame{
 			gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			JLabel myGallery = new JLabel(" MyGallery");
-			System.out.println("My Gallery : "+width/5+" ; 25");
 			myGallery.setPreferredSize(new Dimension(7*width/100,25));
 			myGallery.setBorder(lineborder);
 			mainPanel.add(myGallery, gbc);
@@ -92,7 +91,6 @@ public class GUI extends JFrame{
 			gbc.gridheight = 3;
 			gbc.gridy = 1;
 			JLabel listGal = new JLabel(" List galleries");
-			System.out.println("List galleries : "+width/5+" ; "+(height-50));
 			listGal.setPreferredSize(new Dimension(7*width/100, 58*height/100));
 			listGal.setBorder(lineborder);
 			mainPanel.add(listGal, gbc);
@@ -103,7 +101,6 @@ public class GUI extends JFrame{
 			gbc.gridy = 4;
 			gbc.anchor = GridBagConstraints.LAST_LINE_START;
 			JButton addGallery = new JButton("Add gallery");
-			System.out.println("Add gallery : "+width/5+" ; 25");
 			addGallery.setPreferredSize(new Dimension(7*width/100,25));
 			mainPanel.add(addGallery, gbc);
 
@@ -126,7 +123,6 @@ public class GUI extends JFrame{
 			gl.setVgap(10);
 			JScrollPane jScrollPane = new JScrollPane(galPicture);
 			jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-			System.out.println("Gal picture : "+4*width/5+" ; "+(2*height-25)/3);
 			jScrollPane.setPreferredSize(new Dimension(36*width/100, 58*height/100));
 			galPicture.setLayout(gl);
 
@@ -168,7 +164,6 @@ public class GUI extends JFrame{
 			tabbedPane.addTab(dataGal, card1);
 			tabbedPane.addTab(data,card2);
 			tabbedPane.addTab(analyze,card3);
-			System.out.println("Onglet : "+4*width/5+" ; "+(height-25)/3);
 			tabbedPane.setPreferredSize(new Dimension(36*width/100, 30*height/100));
 			mainPanel.add(tabbedPane,gbc);
 
