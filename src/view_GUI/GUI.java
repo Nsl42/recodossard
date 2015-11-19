@@ -93,7 +93,7 @@ public class GUI extends JFrame{
 			gbc.gridy = 1;
 			JLabel listGal = new JLabel(" List galleries");
 			System.out.println("List galleries : "+width/5+" ; "+(height-50));
-			listGal.setPreferredSize(new Dimension(7*width/100, 58*height/100));
+			listGal.setPreferredSize(new Dimension(7*width/100, 70*height/100));
 			listGal.setBorder(lineborder);
 			mainPanel.add(listGal, gbc);
 
@@ -127,7 +127,7 @@ public class GUI extends JFrame{
 			JScrollPane jScrollPane = new JScrollPane(galPicture);
 			jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 			System.out.println("Gal picture : "+4*width/5+" ; "+(2*height-25)/3);
-			jScrollPane.setPreferredSize(new Dimension(36*width/100, 58*height/100));
+			jScrollPane.setPreferredSize(new Dimension(36*width/100, 70*height/100));
 			galPicture.setLayout(gl);
 
 			mainPanel.add(jScrollPane, gbc);
@@ -169,7 +169,7 @@ public class GUI extends JFrame{
 			tabbedPane.addTab(data,card2);
 			tabbedPane.addTab(analyze,card3);
 			System.out.println("Onglet : "+4*width/5+" ; "+(height-25)/3);
-			tabbedPane.setPreferredSize(new Dimension(36*width/100, 30*height/100));
+			tabbedPane.setPreferredSize(new Dimension(36*width/100, 23*height/100));
 			mainPanel.add(tabbedPane,gbc);
 
 			gbc.gridx = 3;
