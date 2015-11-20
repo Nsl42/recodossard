@@ -1,12 +1,8 @@
 package view;
 
-import java.awt.Image;
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.UUID;
 
-import javax.imageio.ImageIO;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -15,11 +11,9 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.MissingArgumentException;
 import org.apache.commons.cli.Options;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 
 import controller.PhotoListCtrl;
 import controller.ProcessingCtrl;
-import model.PhotoList;
 
 public class Main{
 
@@ -81,66 +75,7 @@ public class Main{
 		
 		processingController.setProcessSettings(exifIsEnabled, false, benchmarkIsEnabled, debugIsEnabled);
 
-		if (file.isDirectory()) {
-			PhotoList pl = analyseDirectory(file.getAbsolutePath());
-			System.out.println(pl.toJSON());			
-		} else {
-			String res = analyseFile(file);
-			System.out.println(res);
-		}
+		System.out.println(processingController.processing(processingController.acknowledge(file)));
 	}
-
-	public static String analyseFile(File file) {
-		String result = null;
-		try {
-			Image image=ImageIO.read(file);
-			if (image == null) {
-				System.err.println("The file "+file.getAbsolutePath()+" could not be opened , it is not an image");
-			}
-
-			UUID galleryId = photoListController.add("dummyGallery");
-			UUID imgId = photoListController.addPhotoToPhotoList(galleryId, file.getAbsolutePath());
-			result = processingController.imgProcessing(imgId);
-
-			if(verboseIsEnabled){
-				System.out.println("File " + file + " done");
-			}
-		} catch(IOException ex) {
-			System.err.println("The file "+file+" could not be opened , an error occurred.");
-		}
-
-		return result; // return arrayList with number of bibs 
 	}
-
-
-	public static PhotoList analyseDirectory(String directory){
-
-		File file = new File(directory);
-		File[] files = file.listFiles();
-		ArrayList<PhotoList> spl = new ArrayList<PhotoList>();
-		PhotoList pl = new PhotoList(directory);
-		if (files != null) {
-			for (int i = 0; i < files.length; i++) {
-				if (!files[i].isDirectory()) {
-					pl.addPhoto(files[i].getAbsolutePath());
-					
-				} else {
-					spl.add(analyseDirectory
-		(files[i].getPath()));
-				}
-			}
-		}
-		if(!spl.isEmpty())
-		{
-			pl.getSublists().addAll(spl);
-		}
-		processingController.listProcessing(pl);
-		return pl;
-		/*
-		ArrayList<String> results = new ArrayList<String>();
-
-		return results;
-*/
-	}
-}
 
