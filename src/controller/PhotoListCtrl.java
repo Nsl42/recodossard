@@ -47,9 +47,7 @@ public class PhotoListCtrl extends Controller {
 	}
 	
 	public UUID addPhotoToPhotoList (UUID idPhotoList, String photoPath) {
-		PhotoList pl = loadedPhotoLists.get(idPhotoList);
-		UUID photoID = pl.addPhoto(photoPath);
-		return photoID;
+		return loadedPhotoLists.get(idPhotoList).addPhoto(photoPath);
 	}
 	
 	public ArrayList<String> getPhotoPathFromPhotoList(UUID idPhotoList) {

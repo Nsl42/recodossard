@@ -56,11 +56,10 @@ public class ProcessingCtrl extends Controller {
 		return to_ret.toJSON();
 	}
 	
-	public String listProcessing(UUID photoListID)
+	public String listProcessing(PhotoList pl)
 	{
 		String ret = "";
 		CVOCR cvocr = new CVOCR();
-		PhotoList pl = ProcessingCtrl.loadedPhotoLists.get(photoListID);
 		ImgModel to_ret = null;
 		for(ImgModel im : pl.getPhotolist())
 		{
@@ -68,6 +67,7 @@ public class ProcessingCtrl extends Controller {
 				to_ret.setProcessed(true);
 				to_ret.getResult().addAll(cvocr.launchDetection(true, im));
 		}
+			
 		return pl.toJSON();
 	}
 
