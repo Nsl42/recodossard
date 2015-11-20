@@ -19,6 +19,7 @@ import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 
 import controller.PhotoListCtrl;
 import controller.ProcessingCtrl;
+import model.PhotoList;
 
 public class Main{
 
@@ -28,6 +29,7 @@ public class Main{
 	private static Options options = new Options();
 	private static boolean debugIsEnabled = false;
 	private static boolean verboseIsEnabled  = false;
+	private static boolean exifIsEnabled  = false;
 	private static boolean benchmarkIsEnabled = false;
 
 	private static void usage() {
@@ -42,6 +44,8 @@ public class Main{
 		options.addOption("v", "verbose", false, "Display more messages.");
 		options.addOption("f", "file", true, "Image or directory to analyse.");
 		options.addOption("d", "debug", false, "Image or directory to analyse.");
+		options.addOption("b", "bench", false, "Wether to perform benchmark");
+		options.addOption("e", "exif", false, "Turns on exif analysis");
 
 		File file = null;
 
@@ -60,6 +64,12 @@ public class Main{
 			if (line.hasOption("d")) {
 				debugIsEnabled = true;
 			}
+			if (line.hasOption("e")) {
+				exifIsEnabled = true;
+			}
+			if (line.hasOption("b")) {
+				benchmarkIsEnabled = true;
+			}
 
 		} catch(MissingArgumentException e) {
 			System.err.println("Option <" + e.getOption().getOpt() + "> need an argument!");
@@ -69,11 +79,11 @@ public class Main{
 			System.out.println( "Unexpected exception:" + e.getMessage() );
 		}
 		
-		processingController.setProcessSettings(false, false, benchmarkIsEnabled, debugIsEnabled);
+		processingController.setProcessSettings(exifIsEnabled, false, benchmarkIsEnabled, debugIsEnabled);
 
 		if (file.isDirectory()) {
-			ArrayList<String> res = analyseDirectory(file.getAbsolutePath());
-			System.out.println(res.toString());			
+			PhotoList pl = analyseDirectory(file.getAbsolutePath());
+			System.out.println(pl.toJSON());			
 		} else {
 			String res = analyseFile(file);
 			System.out.println(res);
@@ -103,21 +113,34 @@ public class Main{
 	}
 
 
-	public static ArrayList<String> analyseDirectory(String directory){
+	public static PhotoList analyseDirectory(String directory){
+
 		File file = new File(directory);
 		File[] files = file.listFiles();
-		ArrayList<String> results = new ArrayList<String>();
-
+		ArrayList<PhotoList> spl = new ArrayList<PhotoList>();
+		PhotoList pl = new PhotoList(directory);
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
-				if (files[i].isDirectory() == true) {
-					results.addAll(analyseDirectory(files[i].getAbsolutePath()));
+				if (!files[i].isDirectory()) {
+					pl.addPhoto(files[i].getAbsolutePath());
+					
 				} else {
-					results.add(analyseFile(files[i]));
+					spl.add(analyseDirectory
+		(files[i].getPath()));
 				}
 			}
 		}
+		if(!spl.isEmpty())
+		{
+			pl.getSublists().addAll(spl);
+		}
+		processingController.listProcessing(pl);
+		return pl;
+		/*
+		ArrayList<String> results = new ArrayList<String>();
+
 		return results;
+*/
 	}
 }
 
