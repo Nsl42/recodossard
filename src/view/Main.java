@@ -16,33 +16,33 @@ import controller.PhotoListCtrl;
 import controller.ProcessingCtrl;
 
 public class Main{
-
+	
 	private static PhotoListCtrl photoListController = new PhotoListCtrl();
 	private static ProcessingCtrl processingController = new ProcessingCtrl();
-
+	
 	private static Options options = new Options();
 	private static boolean debugIsEnabled = false;
 	private static boolean verboseIsEnabled  = false;
 	private static boolean exifIsEnabled  = false;
 	private static boolean benchmarkIsEnabled = false;
-
+	
 	private static void usage() {
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp( "java Main [-h] [--help] [-v] <image file> [<output file>]"
-				, options );
+			, options );
 	}
-
+	
 	public static void main(String args[]) throws Exception{
-
+		
 		options.addOption("h","help",false, "Display the help.");
 		options.addOption("v", "verbose", false, "Display more messages.");
 		options.addOption("f", "file", true, "Image or directory to analyse.");
 		options.addOption("d", "debug", false, "Image or directory to analyse.");
 		options.addOption("b", "bench", false, "Wether to perform benchmark");
 		options.addOption("e", "exif", false, "Turns on exif analysis");
-
+		
 		File file = null;
-
+		
 		CommandLineParser parser = new DefaultParser();
 		try {
 			CommandLine line = parser.parse(options, args);
@@ -64,7 +64,7 @@ public class Main{
 			if (line.hasOption("b")) {
 				benchmarkIsEnabled = true;
 			}
-
+			
 		} catch(MissingArgumentException e) {
 			System.err.println("Option <" + e.getOption().getOpt() + "> need an argument!");
 			usage();
@@ -74,8 +74,8 @@ public class Main{
 		}
 		
 		processingController.setProcessSettings(exifIsEnabled, false, benchmarkIsEnabled, debugIsEnabled);
-
+		
 		System.out.println(processingController.processing(processingController.acknowledge(file)));
 	}
-	}
+}
 

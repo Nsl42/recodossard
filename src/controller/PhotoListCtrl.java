@@ -9,6 +9,13 @@ import model.PhotoList;
 
 public class PhotoListCtrl extends Controller {
 	
+	/**
+	 * writelist given a photoListId and the path to a JSON file, writes
+	 * the JSON output of the photolist id at the specified path.
+	 * @param photolistid The photoList ID you want
+	 * @param pathToJSON The path to the file you want
+	 * @throws Exception 
+	 */
 	public void writelist(UUID photolistid, String pathToJSON) throws Exception{
 	
 		FileWriter fw = new FileWriter(pathToJSON);
@@ -17,6 +24,13 @@ public class PhotoListCtrl extends Controller {
 		out.close();
 		
 	}
+	/**
+	 * writeimg given a ImgModel id and the path to a JSON file, writes
+	 * the JSON output of the imgModel at the specified path.
+	 * @param photoid The photo ID you want
+	 * @param pathToJSON The path to the file you want
+	 * @throws Exception 
+	 */
 	public void writeimg(UUID photoid, String pathToJSON) throws Exception{
 	
 		FileWriter fw = new FileWriter(pathToJSON);
