@@ -1,5 +1,6 @@
 package model;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
@@ -19,10 +20,10 @@ public class ImgModel{
     private boolean processed;
 
 
-    public ImgModel(String pth){
+    public ImgModel(File f){
     	Random r = new Random();
 	    this.id = new UUID(r.nextLong(), r.nextLong());
-	    this.path = pth;
+	    this.path = f.getPath();
 	    this.result = new ArrayList<Integer>();
 	    this.benchData = null;
     }

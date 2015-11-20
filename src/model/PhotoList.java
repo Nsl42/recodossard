@@ -24,10 +24,11 @@ public class PhotoList{
 	private Settings settings;
 	private DataModel data;
 	
-	public PhotoList(String name) {
+	public PhotoList(File f) {
+
 		Random r = new Random();
 		this.id = new UUID(r.nextLong(), r.nextLong());
-		this.name = name;
+		this.name = f.getName();
 		this.photolist = new ArrayList<ImgModel>();
 		this.sublists = new ArrayList<PhotoList>();
 		this.data = new DataModel();
@@ -59,12 +60,26 @@ public class PhotoList{
 		return data;
 	}
 	/* Business Methods */
+	/**
+	 * getPhoto Returns a photo contained in the photoList, given its UUID
+	 * @param photoId The ID of the photo to get
+	 * @return imgModel a valid ImgModel object, matching the given UUID, 
+	 * null if the UUID was not found
+	 */
+	public ImgModel getPhoto(UUID photoId)
+	{
+		ImgModel ret = null;
+		for(ImgModel im : this.getPhotolist())
+			if(photoId.equals(im.getId()))
+				ret = im;
+		return ret;
+	}
 	public UUID addPhoto(String path) {
 		//Adding the EXIF data when we have to
-		ImgModel np = new ImgModel(path);
+		File f = new File(path);
+		ImgModel np = new ImgModel(f);
 		if(Settings.getEXIF())
 		{
-			File f = new File(path);
 			try{
 
 			Metadata meta = ImageMetadataReader.readMetadata(f);
@@ -88,14 +103,6 @@ public class PhotoList{
 		}
 		this.photolist.add(np);
 		return np.getId();
-	}
-	public ImgModel getPhoto(UUID photoId)
-	{
-		ImgModel ret = null;
-		for(ImgModel im : this.getPhotolist())
-			if(photoId.equals(im.getId()))
-				ret = im;
-		return ret;
 	}
 	public boolean contains(UUID id){
 		boolean ret = false;
