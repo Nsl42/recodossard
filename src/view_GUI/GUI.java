@@ -9,17 +9,22 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -27,7 +32,9 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
@@ -37,7 +44,6 @@ import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class GUI extends JFrame{
-
 
 	private static JTextField search;
 	private static JPanel mainPanel;
@@ -63,6 +69,16 @@ public class GUI extends JFrame{
 	static JCheckBox raceData;
 	static JLabel location;
 	static HashMap<JLabel, String> mapLabPath = new HashMap<JLabel, String>();
+	static JCheckBox ranking;
+	static JButton browse;
+	static JFrame fOptions;
+	static File rankingFile;
+	static JButton searchButton;
+	static JButton launch;
+	static ArrayList<JRadioButton> lrb;
+	static ButtonGroup bg;
+	static String placeSelected;
+	static boolean placeIsSelected;
 
 	/**
 	 * Constructor
@@ -76,7 +92,7 @@ public class GUI extends JFrame{
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = 3*screenSize.width/4;
 		int height = 3*screenSize.height/4;
-		
+
 		if (galleryIsExist){
 			mainPanel.setLayout(new GridBagLayout());
 			gbc = new GridBagConstraints();
@@ -123,7 +139,7 @@ public class GUI extends JFrame{
 			mainPanel.add(nameGal, gbc);
 
 			gbc.gridx = 1;
-			gbc.gridwidth = 6;
+			gbc.gridwidth = 7;
 			gbc.gridheight = 2;
 			gbc.gridy = 1;
 			galPicture = new JPanel();
@@ -136,49 +152,39 @@ public class GUI extends JFrame{
 			mainPanel.add(jScrollPane, gbc);
 
 			gbc.gridx = 1;
-			gbc.gridwidth = 6;
+			gbc.gridwidth = 7;
 			gbc.gridheight = 2;
 			gbc.gridy = 3;
 			gbc.anchor = GridBagConstraints.PAGE_END;
-			String dataGal = "Gallery data";
-			String data = "Datas";
+			String analysisRes = "Analysis result";
+			String dataPic = "Picture data";
 			String analyze = "Analyze";
 			tabbedPane = new JTabbedPane();
 			tabbedPane.setVisible(false);
-			card1 = new JPanel();
-			card1.setLayout(new BoxLayout(card1, BoxLayout.Y_AXIS));
+			card3 = new JPanel();
+			card3.setLayout(new BoxLayout(card3, BoxLayout.Y_AXIS));
 			picAnalyzed = new JLabel("Pictures analyzed : ../..");
 			success = new JLabel("Success : ../..");
 			fail = new JLabel("Fail : ../..");
-			advancedOptions = new JLabel("Advanced Options");
-			dataEXIF = new JCheckBox("EXIF data");
-			raceData = new JCheckBox("Race data");
-			card1.add(picAnalyzed);
-			card1.add(Box.createVerticalStrut(10));
-			card1.add(success);
-			card1.add(Box.createVerticalStrut(10));
-			card1.add(fail);
-			card1.add(new JSeparator(SwingConstants.HORIZONTAL));
-			card1.add(advancedOptions);
-			card1.add(Box.createVerticalStrut(10));
-			card1.add(dataEXIF);
-			card1.add(raceData);
-			//card1.setVisible(false);
-			
+			card3.add(picAnalyzed);
+			card3.add(Box.createVerticalStrut(10));
+			card3.add(success);
+			card3.add(Box.createVerticalStrut(10));
+			card3.add(fail);
+
+			card1 = new JPanel();
+			card1.setLayout(new BoxLayout(card1, BoxLayout.Y_AXIS));
+			location = new JLabel();
+			card1.add(location);
+			card1.setVisible(false);
 			card2 = new JPanel();
 			card2.setLayout(new BoxLayout(card2, BoxLayout.Y_AXIS));
-			//card2.add(new JLabel("2"));
-			location = new JLabel();
-			card2.add(location);
-			card2.setVisible(false);
-			card3 = new JPanel();
-			card3.setLayout(new BoxLayout(card3, BoxLayout.Y_AXIS));
 			pbaInit = new ProgressBarAnalyze(false, false);
 			pbaInit.setVisible(true);
-			card3.add(pbaInit);
-			tabbedPane.addTab(dataGal, card1);
-			tabbedPane.addTab(data,card2);
-			tabbedPane.addTab(analyze,card3);
+			card2.add(pbaInit);
+			tabbedPane.addTab(dataPic,card1);
+			tabbedPane.addTab(analyze,card2);
+			tabbedPane.addTab(analysisRes, card3);
 			tabbedPane.setPreferredSize(new Dimension(36*width/100, 23*height/100));
 			mainPanel.add(tabbedPane,gbc);
 
@@ -191,7 +197,7 @@ public class GUI extends JFrame{
 			analyseButton.setPreferredSize(new Dimension(1,25));
 			analyseButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(ActionEvent event){
-					addAnalyzeButtonActionListener(event);           
+					addAnalyzeButtonActionListener();           
 				}
 			}); 
 			mainPanel.add(analyseButton,gbc);
@@ -227,18 +233,58 @@ public class GUI extends JFrame{
 			});
 			mainPanel.add(deletePicture,gbc);
 
-
 			gbc.gridx = 6;
 			gbc.gridwidth = 1;
 			gbc.gridheight = 1;
 			gbc.gridy = 0;
 			gbc.anchor = GridBagConstraints.FIRST_LINE_END;
-			search = new JTextField("Search bib...");
+			search = new JTextField("Enter bib ...");
 			search.setPreferredSize(new Dimension(50,25));
 			mainPanel.add(search,gbc);
 			search.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					search.setText("");
+				}
+			});
+			search.addKeyListener(new KeyListener(){
+				public void keyReleased(KeyEvent e) {
+					if (e.getKeyCode() == KeyEvent.VK_ENTER){
+						if(search.getText().matches("[0-9]*")){
+							searchBib(search.getText());
+						}else{
+							JFrame f = new JFrame("Error !");
+							if(search.getText().equals("Enter bib ...")){
+								JOptionPane.showMessageDialog(f, "Please enter a number of bib.");
+							}else{ 
+								JOptionPane.showMessageDialog(f, "Please search only a number of bib.");
+							}
+						}
+					}
+				}
+				public void keyPressed(KeyEvent e) {}
+				public void keyTyped(KeyEvent e) {}
+			});
+
+			gbc.gridx = 7;
+			gbc.gridwidth = 1;
+			gbc.gridheight = 1;
+			gbc.gridy = 0;
+			gbc.anchor = GridBagConstraints.FIRST_LINE_END;
+			searchButton = new JButton("Search");
+			searchButton.setPreferredSize(new Dimension(20,25));
+			mainPanel.add(searchButton,gbc);
+			searchButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt){
+					if(search.getText().matches("[0-9]*")){
+						searchBib(search.getText());
+					}else{
+						JFrame f = new JFrame("Error !");
+						if(search.getText().equals("Enter bib ...")){
+							JOptionPane.showMessageDialog(f, "Please enter a number of bib.");
+						}else{ 
+							JOptionPane.showMessageDialog(f, "Please search only a number of bib.");
+						}
+					}
 				}
 			});
 
@@ -257,8 +303,8 @@ public class GUI extends JFrame{
 		}
 
 		add(mainPanel);
-	
-		
+
+
 		setSize(width, height);
 		setLocationRelativeTo(null);
 		setResizable(false);
@@ -273,6 +319,7 @@ public class GUI extends JFrame{
 	 */
 	public static void main(String[] args) throws IOException {
 		JFrame frame = new GUI();
+
 	}
 
 	/**
@@ -282,7 +329,7 @@ public class GUI extends JFrame{
 	private static void addPicActionPerformed(ActionEvent evt) {
 		//create file chooser
 		JFileChooser jfc = new JFileChooser();
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & GIF Images", "jpg", "jpeg");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & JPEG Images", "jpg", "jpeg");
 		jfc.setFileFilter(filter);
 		jfc.setMultiSelectionEnabled(true);
 		if(jfc.showOpenDialog(addPicture) == JFileChooser.APPROVE_OPTION){
@@ -296,20 +343,135 @@ public class GUI extends JFrame{
 	 * Display progress bar when click on analyze button
 	 * @param event
 	 */
-	private static void addAnalyzeButtonActionListener(ActionEvent event){
+	private static void addAnalyzeButtonActionListener(){
+		placeIsSelected = false;
+		if(!listJLab.isEmpty()){
+			fOptions = new JFrame("Select option");
+			fOptions.setVisible(true);
+			fOptions.setLocationRelativeTo(null);
+			fOptions.setLayout(new BorderLayout());
+			JPanel panOptions = new JPanel();
+			panOptions.setBorder(BorderFactory.createTitledBorder("Ranking Options"));
+			panOptions.setLayout(new BoxLayout(panOptions, BoxLayout.Y_AXIS));
+
+			ranking = new JCheckBox("Ranking");
+			panOptions.add(ranking);
+			browse = new JButton("Browse...");
+			browse.setEnabled(false);
+			panOptions.add(browse);
+			ranking.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if (((JCheckBox)e.getSource()).isSelected()) {
+						browse.setEnabled(true);
+						browse.addActionListener(new java.awt.event.ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								JFileChooser jfc = new JFileChooser();
+								FileNameExtensionFilter filter = new FileNameExtensionFilter("XLS or CSV file", "xls", "csv");
+								jfc.setFileFilter(filter);
+								if(jfc.showOpenDialog(browse) == JFileChooser.APPROVE_OPTION){
+									rankingFile = jfc.getSelectedFile();
+								}
+							}
+						});
+					}
+				}
+			});
+			panOptions.add(Box.createVerticalStrut(20));
+
+			JPanel placeRace = new JPanel();
+			placeRace.setBorder(BorderFactory.createTitledBorder("Place Options"));
+			placeRace.setLayout(new BoxLayout(placeRace, BoxLayout.Y_AXIS));
+			JCheckBox place = new JCheckBox("Place of picture");
+			placeRace.add(place);
+			bg = new ButtonGroup();
+			ArrayList<String> a = selectXLScolumnsForAnalyze();
+			lrb = new  ArrayList<JRadioButton>();
+			for(int i=0; i<a.size(); i++){
+				JRadioButton pl = new JRadioButton(a.get(i).toString());
+				lrb.add(pl);
+				pl.setEnabled(false);
+				bg.add(pl);
+				placeRace.add(pl);
+			}
+			place.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if (((JCheckBox)e.getSource()).isSelected()) {
+						placeIsSelected=true;
+						for(int i=0; i<lrb.size(); i++){
+							lrb.get(i).setEnabled(true);
+						}
+					}
+				}
+			});
+
+			fOptions.add(panOptions, BorderLayout.NORTH);
+			fOptions.add(placeRace, BorderLayout.CENTER);
+			launch = new JButton("Launch");
+			fOptions.add(launch, BorderLayout.SOUTH);
+
+			launch.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if(placeIsSelected){
+						AbstractButton button = null;
+						for (Enumeration<AbstractButton> buttons = bg.getElements(); buttons.hasMoreElements();) {
+							button = buttons.nextElement();
+						} 
+						placeSelected = button.getText();
+					}
+					launchAnalyze(ranking.isSelected(), placeIsSelected);
+					fOptions.dispose();
+				}
+			});
+			fOptions.setSize(300, 300);
+		}else{
+			JFrame f = new JFrame("Error !");
+			JOptionPane.showMessageDialog(f, "There is no picture to analyze.");
+		}
+
+	}
+
+
+	private static ArrayList<String> selectXLScolumnsForAnalyze(){
+		ArrayList<String> al = new ArrayList<String>();
+		al.add("Finish");
+		al.add("KM 10");
+		al.add("KM 30");
+		al.add("KM 50");
+		return al;
+	}
+
+	/**
+	 * Displays analyze tab which displays the informations of the analysis
+	 * @param optionSelected
+	 */
+	private static void launchAnalyze(boolean optionSelected, boolean placeSelected){
+		if(optionSelected){
+			if(rankingFile != null){
+				//analyse avec classement ajouter placeSelected
+			}else{
+				JFrame f = new JFrame("Error !");
+				JOptionPane.showMessageDialog(f, "You have to put a ranking file. Please click on Browse.");
+				addAnalyzeButtonActionListener();
+			}
+		}else{
+			// analyse sans classement
+		}
 		ProgressBarAnalyze pba = new ProgressBarAnalyze(true, true);
 		pbaInit.setVisible(false);
 		tabbedPane.setVisible(true);
-		
-		JLabel nbPic = new JLabel("Picture"+"../..");
-		JLabel nbBib = new JLabel("Number of bibs founded : ");
-		card3.add(pba, BorderLayout.NORTH);
-		card3.add(Box.createVerticalStrut(10));
-		card3.add(nbPic, BorderLayout.CENTER);
-		card3.add(Box.createVerticalStrut(10));
-		card3.add(nbBib, BorderLayout.SOUTH);
-		tabbedPane.setSelectedIndex(2);
 
+		JLabel nbPic = new JLabel("Picture "+"../..");
+		JLabel nbBib = new JLabel("Number of bibs founded : ");
+		card2.add(pba, BorderLayout.NORTH);
+		card2.add(Box.createVerticalStrut(10));
+		card2.add(nbPic, BorderLayout.CENTER);
+		card2.add(Box.createVerticalStrut(10));
+		card2.add(nbBib, BorderLayout.SOUTH);
+		tabbedPane.setSelectedIndex(1);
+		// Si analyse terminée
+		if(true){
+			tabbedPane.setSelectedIndex(2);
+		}
 	}
 
 	/**
@@ -339,25 +501,31 @@ public class GUI extends JFrame{
 	 */
 	private static void deletePicActionPerformed(ArrayList<File> listF, ArrayList<JLabel> listJL, ArrayList<JLabel> indexPicSelected){
 		list = listF;
-		int sizeIndexPic = indexPicSelected.size();
-		int sizeListLab = listJL.size();
-		listJLab = listJL;
-		for(int j=0; j<sizeIndexPic; j++){
-			for(int i=0; i<sizeListLab; i++){
-				if(indexPicSelected.get(j) == listJLab.get(i)){
-					list.remove(i);
-					listJLab.remove(i);
-					indexPicSelected.remove(j);
-					j--;
-					if(j==-1) j=0;
-					sizeListLab--;
-					sizeIndexPic--;
+		if(!indexPicSelected.isEmpty()){
+			int sizeIndexPic = indexPicSelected.size();
+			int sizeListLab = listJL.size();
+			listJLab = listJL;
+			for(int j=0; j<sizeIndexPic; j++){
+				for(int i=0; i<sizeListLab; i++){
+					if(indexPicSelected.get(j) == listJLab.get(i)){
+						list.remove(i);
+						listJLab.remove(i);
+						indexPicSelected.remove(j);
+						j--;
+						if(j==-1) j=0;
+						sizeListLab--;
+						sizeIndexPic--;
+					}
 				}
 			}
+			listJLab.removeAll(listJLab);
+			galPicture.removeAll();
+			createGallery(list);
+		}else{
+			JFrame f = new JFrame("Error !");
+			JOptionPane.showMessageDialog(f, "You have to select a picture.");
 		}
-		listJLab.removeAll(listJLab);
-		galPicture.removeAll();
-		createGallery(list);
+
 	}
 
 
@@ -388,12 +556,10 @@ public class GUI extends JFrame{
 		mainPanel.repaint();
 	}
 
-	private static void afficheList(ArrayList l){
-		for(int i=0; i<l.size(); i++){
-			System.out.println("List "+i+" : "+l.get(i));
-		}
-	}
-	
+	/**
+	 * When a picture is selected, tab display informations of the picture
+	 * @param object
+	 */
 	private static void manageTabs(Object object){
 		JLabel lab = ((JLabel) object);
 		ImageIcon imgIcon = (ImageIcon) lab.getIcon();
@@ -401,13 +567,20 @@ public class GUI extends JFrame{
 		//set Labels of card1 and card2 :
 		// images analysées, succès, échecs, checkbox
 		location = new JLabel("Location : "+mapLabPath.get(lab).toString());
-		card2.add(location);
-		card2.add(new JSeparator(SwingConstants.HORIZONTAL));
-		card2.add(new JLabel("EXIF data"));
-		card2.add(Box.createVerticalStrut(10));
-		
+		card1.add(location);
+		card1.add(new JSeparator(SwingConstants.HORIZONTAL));
+		card1.add(new JLabel("EXIF data"));
+		card1.add(Box.createVerticalStrut(10));
 		tabbedPane.setVisible(true);
-		
+	}
+
+	/**
+	 * Search all the pictures in the gallery which have this number of bib
+	 * @param bibNumber
+	 */
+	private static void searchBib(String bibNumber){
+		System.out.println("WORKS !");
+		//Implementer recherche de dossard
 	}
 
 }
