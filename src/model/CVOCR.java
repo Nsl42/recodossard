@@ -190,6 +190,8 @@ public class CVOCR {
 		this.imageGrayMat = this.imageMat.clone();
 		Imgproc.cvtColor(this.imageGrayMat, this.imageGrayMat, Imgproc.COLOR_BGR2GRAY);
 		
+
+		ArrayList<Integer> results = getImageNumbers();
 		if (Settings.getBENCH()) {
 			long endTime = System.nanoTime();
 			long processTime = endTime - startTime;
@@ -197,8 +199,6 @@ public class CVOCR {
 			bData.setProcTime((int) processTime);
 			im.seBenchData(bData);
 		}
-
-		ArrayList<Integer> results = getImageNumbers();
 		return results;
 	}
 

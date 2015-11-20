@@ -1,6 +1,13 @@
 package model;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.Tag;
+import com.drew.metadata.exif.ExifSubIFDDirectory;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Random;
 
 import java.util.UUID;
@@ -53,7 +60,32 @@ public class PhotoList{
 	}
 	/* Business Methods */
 	public UUID addPhoto(String path) {
+		//Adding the EXIF data when we have to
 		ImgModel np = new ImgModel(path);
+		if(Settings.getEXIF())
+		{
+			File f = new File(path);
+			try{
+
+			Metadata meta = ImageMetadataReader.readMetadata(f);
+			// obtain the Exif directory
+			String date;
+			if(meta.containsDirectoryOfType(ExifSubIFDDirectory.class))
+			{
+				ExifSubIFDDirectory exifdir;
+			exifdir = meta.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+			if(exifdir.containsTag(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL))
+				date = exifdir.getString(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+			else
+				date = "NO TIME INFO FOUND";
+
+			}else
+				date = "NO EXIF DATA FOUND";
+			HashMap<String, String> hm = new HashMap<String, String>();
+			hm.put("Date", date);
+			this.getData().getEXIF_VALUES().add(hm);
+			}catch ( Exception e){e.printStackTrace();}
+		}
 		this.photolist.add(np);
 		return np.getId();
 	}

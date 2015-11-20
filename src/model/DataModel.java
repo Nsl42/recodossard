@@ -21,6 +21,17 @@ public class DataModel {
 private ArrayList<HashMap<String, String>> EXIF_VALUES;
 private HashMap<String,String> DATA;
 
+public DataModel(){
+	this.EXIF_VALUES= new ArrayList<HashMap<String, String>>();
+	this.DATA =  new HashMap<String, String>();
+}
+
+	public ArrayList<HashMap<String, String>> getEXIF_VALUES() {
+		return EXIF_VALUES;
+	}
+	public HashMap<String, String> getDATA() {
+		return DATA;
+	}
 
 /* Business Methods */
 	public JsonObject getJsonObject()
