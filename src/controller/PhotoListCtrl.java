@@ -31,11 +31,13 @@ public class PhotoListCtrl extends Controller {
 		
 	}
 	
+	/*
 	public UUID add(String name) {
 		PhotoList pl = new PhotoList(name);
 		loadedPhotoLists.put(pl.getId(), pl);
 		return  pl.getId();
 	}
+	*/
 	
 	public void delete(UUID idPhotoList) {
 		loadedPhotoLists.remove(idPhotoList);
