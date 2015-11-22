@@ -2,6 +2,7 @@ package model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
@@ -16,8 +17,8 @@ public class ImgModel{
     private UUID id;
     private String path;
     private ArrayList<Integer> result;
-    private BenchData benchData;
     private boolean processed;
+    private HashMap<String, String> exif;
 
 
     public ImgModel(File f){
@@ -25,7 +26,6 @@ public class ImgModel{
 	    this.id = new UUID(r.nextLong(), r.nextLong());
 	    this.path = f.getPath();
 	    this.result = new ArrayList<Integer>();
-	    this.benchData = null;
     }
 
     
@@ -47,13 +47,6 @@ public class ImgModel{
 		this.processed = processed;
 	}
 
-	public BenchData getBenchData() {
-		return benchData;
-	}
-
-	public void seBenchData(BenchData benchData) {
-		this.benchData = benchData;
-	}
 
 	/* ID, and Result only have getters : One can perform some operations 
 	on result by getting the object, and the ID should never be set 
@@ -70,9 +63,9 @@ public class ImgModel{
     
  
 	/* Business Methods */
-
 	/**
-	 * toJSON() : Returns the object as a JSON string
+	 * Returns the object as a JSON string
+	 * @return the JsonString representing the ImgModel object
 	 */
 	public String toJSON() {
 		JsonObject ret = this.getJsonObject();
@@ -80,7 +73,8 @@ public class ImgModel{
 	}
 
 	/**
-	 * toJSON() : Returns the object as a JSONObject 
+	 * Returns the object as a JSONObject 
+	 * @return JsonObject the object ImgModel as JsonObject
 	 */
 	public JsonObject getJsonObject() {
 		
@@ -99,9 +93,6 @@ public class ImgModel{
 		//Adding path, results, processed...
 		inside.add(this.path, numbers).
 		add("processed", this.processed);
-		// BenchData addendum
-		if(benchData != null) {
-			inside.add("benchData", this.benchData.getJSONObject());
 		}
 
 		JsonObject ret = Json.createObjectBuilder()

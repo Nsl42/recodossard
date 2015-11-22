@@ -74,14 +74,18 @@ public class PhotoList{
 				ret = im;
 		return ret;
 	}
-	public UUID addPhoto(String path) {
+	/**
+	 * addPhoto Adds the photo corresponding to the File given to the current
+	 * photoList
+	 * @param File the file object you want to add to this list
+	 * @return ImgModel The photo object added, null if the UUID does not correspond
+	 */
+	public ImgModel addPhoto(File f) {
 		//Adding the EXIF data when we have to
-		File f = new File(path);
 		ImgModel np = new ImgModel(f);
 		if(Settings.getEXIF())
 		{
 			try{
-
 			Metadata meta = ImageMetadataReader.readMetadata(f);
 			// obtain the Exif directory
 			String date;
@@ -102,8 +106,17 @@ public class PhotoList{
 			}catch ( Exception e){e.printStackTrace();}
 		}
 		this.photolist.add(np);
-		return np.getId();
+
+		return np;
 	}
+
+	
+	/**
+	 * returns true if the photolist contains the ImgModel refered 
+	 * to by the ID
+	 * @param id ImgModel ID you want to check
+	 * @return true if the photolist contains the object, false if not
+	 */
 	public boolean contains(UUID id){
 		boolean ret = false;
 		for(ImgModel im : this.getPhotolist())
@@ -116,12 +129,20 @@ public class PhotoList{
 		return ret;
 	}
 	
+	/**
+	 * Returns the JSON string representing the object
+	 * @return JSON string
+	 */
 	public String toJSON() {
 		
 		JsonObject ret = this.getJsonObject();
 		return ret.toString();
 		
 	}
+	/**
+	 * Returns the JsonObject constructed around the object
+	 * @return JsonObject
+	 */
 	public JsonObject getJsonObject()
 	{
 		JsonObjectBuilder ret =  Json.createObjectBuilder();
