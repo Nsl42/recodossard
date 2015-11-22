@@ -72,7 +72,11 @@ public class ImgModel{
 	/* Business Methods */
 
 	/**
-	 * toJSON() : Returns the object as a JSON string
+	 * toJSON() : 
+	 */
+	/**
+	 * Returns the object as a JSON string
+	 * @return the JsonString representing the ImgModel object
 	 */
 	public String toJSON() {
 		JsonObject ret = this.getJsonObject();
@@ -80,7 +84,8 @@ public class ImgModel{
 	}
 
 	/**
-	 * toJSON() : Returns the object as a JSONObject 
+	 * Returns the object as a JSONObject 
+	 * @return JsonObject the object ImgModel as JsonObject
 	 */
 	public JsonObject getJsonObject() {
 		
