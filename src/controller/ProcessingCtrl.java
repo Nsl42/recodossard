@@ -73,6 +73,7 @@ public class ProcessingCtrl extends Controller {
 	 */
 	public String imgProcessing(ImgModel im)
 	{
+		im.setProcessed(true);
 		im.getResult().addAll(engine.launchDetection(true, im));
 		return im.toJSON();
 

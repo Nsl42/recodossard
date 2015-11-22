@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -47,28 +48,38 @@ public class PhotoListCtrl extends Controller {
 	
 	/*
 	public UUID add(String name) {
-		PhotoList pl = new PhotoList(name);
-		loadedPhotoLists.put(pl.getId(), pl);
+		PhotoList pl = new PhotoList(name); loadedPhotoLists.put(pl.getId(), pl);
 		return  pl.getId();
 	}
 	*/
 	
+
+	/**
+	 * Deletes the photoList corresponding to the UUID given 
+	 * @param idPhotoList the ID of the photolist you want to remove
+	 */
 	public void delete(UUID idPhotoList) {
 		loadedPhotoLists.remove(idPhotoList);
 	}
 	
+	/**
+	 * Reads from a JSON file, and adds the items to the acknowledged content
+	 * @param pathToJSON path to a JSON file
+	 */
 	public void loadImagesFromJSON(String pathToJSON) {
 		
-		
 	}
 	
-	public UUID addPhotoToPhotoList (UUID idPhotoList, String photoPath) {
-		return loadedPhotoLists.get(idPhotoList).addPhoto(photoPath);
+	/**
+	 * Adds a photo to a PhotoList 
+	 * @param idPhotoList The UUID of a PhotoList you want
+	 * @param f The file object of a image you want to add to the photoList
+	 * @return the object ImgModel corresponding to the UUID you've given
+	 */
+	public ImgModel addPhotoToPhotoList (UUID idPhotoList, File f) {
+		return loadedPhotoLists.get(idPhotoList).addPhoto(f);
 	}
 	
-	public ArrayList<String> getPhotoPathFromPhotoList(UUID idPhotoList) {
-		return null;
-	}
 	
 	
 }
