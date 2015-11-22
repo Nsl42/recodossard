@@ -45,39 +45,137 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class GUI extends JFrame{
 
+	/**
+	 * JTextField for searching a number ofbib
+	 */
 	private static JTextField search;
+	/**
+	 * JPanel which contains all the component
+	 */
 	private static JPanel mainPanel;
+	/**
+	 * JButton for adding a picture
+	 */
 	private static JButton addPicture;
+	/**
+	 * JPanel which contains all the pictures of the gallery
+	 */
 	private static JPanel galPicture;
+	/**
+	 * GridBagConstraints for all the components
+	 */
 	private static GridBagConstraints gbc;
+	/**
+	 * Border for different components
+	 */
 	static Border lineborder = BorderFactory.createLineBorder(Color.black, 1); 
+	/**
+	 * ProgressBar for analysis
+	 */
 	static ProgressBarAnalyze pbaInit;
+	/**
+	 * TabbedPane in the bottom of the window
+	 */
 	static JTabbedPane tabbedPane;
+	/**
+	 * 3rd tab of the tabbedpane
+	 */
 	static JPanel card3;
+	/**
+	 * 2nd tab of the tabbedpane
+	 */
 	static JPanel card2;
+	/**
+	 * 1st tab of the tabbedpane
+	 */
 	static JPanel card1;
+	/**
+	 * List of all the pictures of the gallery
+	 */
 	static File[] listFiles;
+	/**
+	 * List of all the JLabel of the gallery which contains for each a picture
+	 */
 	static ArrayList<JLabel> listJLab = new ArrayList<JLabel>();
+	/**
+	 * List of the JLabel selected in the gallery
+	 */
 	private static ArrayList<JLabel> indexPicSelected = new ArrayList<JLabel>();
+	/**
+	 * List of file
+	 */
 	static ArrayList<File> list;
+	/**
+	 * A label which contains a picture
+	 */
 	static JLabel labPic;
+	/**
+	 * JLabel with the number of pictures analyzed
+	 */
 	static JLabel picAnalyzed;
+	/**
+	 * JLabel with the number of pictures analysis successed
+	 */
 	static JLabel success;
+	/**
+	 * JLabel with the number of pictures analysis failed
+	 */
 	static JLabel fail;
+	/**
+	 * JLabel with the options for analysis
+	 */
 	static JLabel advancedOptions;
+	/**
+	 * CheckBox for the EXIF option
+	 */
 	static JCheckBox dataEXIF;
-	static JCheckBox raceData;
+	/**
+	 * JLabel to specify the location of the picture
+	 */
 	static JLabel location;
+	/**
+	 * HashMap which contains the JLabel of a picture and its path File
+	 */
 	static HashMap<JLabel, String> mapLabPath = new HashMap<JLabel, String>();
+	/**
+	 * CheckBox for ranking option
+	 */
 	static JCheckBox ranking;
+	/**
+	 * JButton to add a file for the ranking option
+	 */
 	static JButton browse;
+	/**
+	 * JFrame to select the options of the analysis
+	 */
 	static JFrame fOptions;
+	/**
+	 * File which contains ranking
+	 */
 	static File rankingFile;
+	/**
+	 * Button to start the research of a bib number
+	 */
 	static JButton searchButton;
+	/**
+	 * Button to launch the analysis
+	 */
 	static JButton launch;
+	/**
+	 * ArrayList of RadioButton which contains all the locations possible of the picture
+	 */
 	static ArrayList<JRadioButton> lrb;
+	/**
+	 * Button Group which contains the arrayList of RadioButton
+	 */
 	static ButtonGroup bg;
+	/**
+	 * The name of the location of the picture selected
+	 */
 	static String placeSelected;
+	/**
+	*  Boolean : true is the location option if selected
+	*/
 	static boolean placeIsSelected;
 
 	/**
