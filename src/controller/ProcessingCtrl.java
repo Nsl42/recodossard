@@ -110,7 +110,7 @@ public class ProcessingCtrl extends Controller {
 		if(!f.isDirectory())
 		{
 			PhotoList pl = new PhotoList(f.getParentFile());
-			ImgModel im = new ImgModel(f);
+			ImgModel im = pl.addPhoto(f);
 			this.loadedPhotoLists.put(pl.getId(), pl);
 			return(im.getId());
 		}
@@ -119,7 +119,7 @@ public class ProcessingCtrl extends Controller {
 			PhotoList pl = new PhotoList(f);
 			for(File iff : f.listFiles())
 				if(iff.isFile())
-					pl.getPhotolist().add(new ImgModel(iff));
+					pl.addPhoto(iff);
 				else
 					pl.getSublists().add(this.dir_ack(iff));
 			this.loadedPhotoLists.put(pl.getId(), pl);
@@ -138,7 +138,7 @@ public class ProcessingCtrl extends Controller {
 		PhotoList pl = new PhotoList(f);
 		for(File iff : f.listFiles())
 			if(iff.isFile())
-				pl.getPhotolist().add(new ImgModel(iff));
+				pl.addPhoto(iff);
 			else
 				pl.getSublists().add(dir_ack(iff));
 		return pl;
