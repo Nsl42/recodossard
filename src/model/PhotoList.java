@@ -4,6 +4,7 @@ import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
+import com.drew.metadata.icc.IccDirectory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -90,6 +91,7 @@ public class PhotoList{
 			Metadata meta = ImageMetadataReader.readMetadata(f);
 			// obtain the Exif directory
 			String date;
+			String lumi;
 			if(meta.containsDirectoryOfType(ExifSubIFDDirectory.class))
 			{
 				ExifSubIFDDirectory exifdir;
@@ -101,8 +103,20 @@ public class PhotoList{
 
 			}else
 				date = "NO EXIF DATA FOUND";
+			if(meta.containsDirectoryOfType(IccDirectory.class))
+			{
+				IccDirectory iccdir;
+			iccdir = meta.getFirstDirectoryOfType(IccDirectory.class);
+			if(iccdir.containsTag(IccDirectory.TAG_TAG_lumi))
+				lumi = iccdir.getString(IccDirectory.TAG_TAG_lumi);
+			else
+				lumi = "NO LUMINOSITY INFO FOUND";
+
+			}else
+				lumi = "NO ICC DATA FOUND";
 			HashMap<String, String> hm = new HashMap<String, String>();
 			hm.put("Date", date);
+			hm.put("lumi", lumi);
 			this.getData().getEXIF_VALUES().add(hm);
 			}catch ( Exception e){e.printStackTrace();}
 		}
