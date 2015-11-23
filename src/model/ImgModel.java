@@ -93,8 +93,6 @@ public class ImgModel{
 		//Adding path, results, processed...
 		inside.add(this.path, numbers).
 		add("processed", this.processed);
-		}
-
 		JsonObject ret = Json.createObjectBuilder()
 			.add(this.id.toString(), inside).build();
 		return ret;

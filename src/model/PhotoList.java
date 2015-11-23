@@ -60,6 +60,7 @@ public class PhotoList{
 		return data;
 	}
 	/* Business Methods */
+
 	/**
 	 * getPhoto Returns a photo contained in the photoList, given its UUID
 	 * @param photoId The ID of the photo to get
@@ -129,8 +130,7 @@ public class PhotoList{
 		return ret;
 	}
 	
-	/**
-	 * Returns the JSON string representing the object
+	/** * Returns the JSON string representing the object
 	 * @return JSON string
 	 */
 	public String toJSON() {
@@ -165,5 +165,17 @@ public class PhotoList{
 		for(PhotoList pl : this.getSublists())
 			ret.add(pl.getName(), pl.getJsonObject());
 		return ret.build();
+	}
+	
+	/**
+	 * removeImage removes an image refered by its UUID object
+	 * @param idImage the UUID of the image you want to remove
+	 */
+	public void removeImage(UUID idImage) {
+		for (ImgModel im : this.getPhotolist())
+		{
+			if(im.getId().equals(idImage))
+				this.getPhotolist().remove(im);
+		}
 	}
 }
