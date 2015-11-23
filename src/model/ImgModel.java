@@ -19,6 +19,7 @@ public class ImgModel{
     private ArrayList<Integer> result;
     private boolean processed;
     private HashMap<String, String> exif;
+    private File f;
 
 
     public ImgModel(File f){
@@ -26,6 +27,7 @@ public class ImgModel{
 	    this.id = new UUID(r.nextLong(), r.nextLong());
 	    this.path = f.getPath();
 	    this.result = new ArrayList<Integer>();
+	    this.f = f;
     }
 
     
@@ -58,6 +60,9 @@ public class ImgModel{
 
 	public ArrayList<Integer> getResult() {
 		return result;
+	}
+	public Object getFile() {
+		return this.f;
 	}
     
     
@@ -97,4 +102,5 @@ public class ImgModel{
 			.add(this.id.toString(), inside).build();
 		return ret;
 	}
+
 }

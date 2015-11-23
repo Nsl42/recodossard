@@ -1,5 +1,6 @@
 package view_GUI;
 
+import controller.ProcessingCtrl;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -38,6 +39,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class GUI extends JFrame{
 
 
+	private static boolean containsList = false;
 	private static JTextField search;
 	private static JPanel mainPanel;
 	private static JButton addPicture;
@@ -62,11 +64,10 @@ public class GUI extends JFrame{
 	public GUI(){
 		super("RecoDossard");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		final ProcessingCtrl processCtrl = new ProcessingCtrl();
 		mainPanel = new JPanel();
-		boolean galleryIsExist = true;
 
-		if (galleryIsExist){
+		if (GUI.containsList){
 			mainPanel.setLayout(new GridBagLayout());
 			gbc = new GridBagConstraints();
 			gbc.weightx = 1;
@@ -147,6 +148,7 @@ public class GUI extends JFrame{
 			card1.add(success);
 			card1.add(Box.createVerticalStrut(10));
 			card1.add(fail);
+		
 			card1.add(new JSeparator(SwingConstants.HORIZONTAL));
 			card1.add(advancedOptions);
 			card1.add(Box.createVerticalStrut(10));
@@ -230,18 +232,28 @@ public class GUI extends JFrame{
 			noGallery.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 			JLabel addGalToStart = new JLabel("To start : Add a gallery");
 			addGalToStart.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-			JButton add = new JButton("Add Gallery");
+			final JButton add = new JButton("Add Gallery");
 			add.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 			add.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
+					JFileChooser jfc = new JFileChooser();
+					jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					jfc.setMultiSelectionEnabled(false);
 					System.out.println("ADDED");
+					if(jfc.showOpenDialog(add) == JFileChooser.APPROVE_OPTION){
+						processCtrl.acknowledge(jfc.getSelectedFile());
+						GUI.containsList = true;
+						mainPanel.validate();
+						mainPanel.repaint();
+					System.out.println("repaint");
+					}
 				}
 			});
 			mainPanel.add(noGallery);
 			mainPanel.add(addGalToStart);
 			mainPanel.add(add);
 		}
-
+		
 		add(mainPanel);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		

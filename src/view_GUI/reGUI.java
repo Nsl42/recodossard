@@ -35,33 +35,10 @@ public class reGUI extends JFrame{
 	 * Constructor
 	 */
 	public reGUI(){
-		super("RecoDossard");
-		final ProcessingCtrl processCtrl = new ProcessingCtrl();
+		super("Rec(oDossard");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		mainPanel = new JPanel();
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-		JLabel noGallery = new JLabel("No gallery");
-		noGallery.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-		JLabel addGalToStart = new JLabel("To start : Add a gallery");
-		addGalToStart.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-		final JButton add = new JButton("Add Gallery");
-		add.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-		add.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				JFileChooser jfc = new JFileChooser();
-				jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				jfc.setMultiSelectionEnabled(false);
-				System.out.println("ADDED");
-				if(jfc.showOpenDialog(add) == JFileChooser.APPROVE_OPTION){
-//				System.out.println(processCtrl.processing(processCtrl.acknowledge(jfc.getSelectedFiles()[1])));	
-				System.out.println("ADDED");
-		}
-			}
-		});
-		mainPanel.add(noGallery);
-		mainPanel.add(addGalToStart);
-		mainPanel.add(add);
 	/*
 		add(mainPanel);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -82,11 +59,7 @@ public class reGUI extends JFrame{
 	 */
 	public static void main(String[] args) throws IOException {
 		JFrame frame = new reGUI();
-		while(true)
-		{
 			frame.add(mainPanel);
-			frame.show();
-
-		}
+			frame.setVisible(true);
 	}
 }
