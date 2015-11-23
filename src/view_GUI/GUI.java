@@ -186,7 +186,7 @@ public class GUI extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		mainPanel = new JPanel();
-		boolean galleryIsExist = true;
+		boolean galleryIsExist = false;
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = 3*screenSize.width/4;
 		int height = 3*screenSize.height/4;
@@ -395,6 +395,7 @@ public class GUI extends JFrame{
 			addGalToStart.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 			JButton add = new JButton("Add Gallery");
 			add.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+			mainPanel.add(Box.createVerticalStrut((height/2)-50));
 			mainPanel.add(noGallery);
 			mainPanel.add(addGalToStart);
 			mainPanel.add(add);
