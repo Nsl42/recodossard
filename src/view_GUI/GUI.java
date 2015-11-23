@@ -225,7 +225,6 @@ public class GUI extends JFrame{
 			});
 
 		}else{
-			mainPanel = new JPanel();
 			mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 			JLabel noGallery = new JLabel("No gallery");
 			noGallery.setAlignmentX(JComponent.CENTER_ALIGNMENT);
@@ -233,6 +232,11 @@ public class GUI extends JFrame{
 			addGalToStart.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 			JButton add = new JButton("Add Gallery");
 			add.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+			add.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					System.out.println("ADDED");
+				}
+			});
 			mainPanel.add(noGallery);
 			mainPanel.add(addGalToStart);
 			mainPanel.add(add);

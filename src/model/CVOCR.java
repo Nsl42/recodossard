@@ -192,13 +192,6 @@ public class CVOCR {
 		
 
 		ArrayList<Integer> results = getImageNumbers();
-		if (Settings.getBENCH()) {
-			long endTime = System.nanoTime();
-			long processTime = endTime - startTime;
-			BenchData bData = new BenchData();
-			bData.setProcTime((int) processTime);
-			im.seBenchData(bData);
-		}
 		return results;
 	}
 
