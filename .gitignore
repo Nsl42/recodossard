@@ -8,3 +8,8 @@ build.xml
 /test/
 /res/
 /tessdata
+build/
+data/
+lib/
+manifest.mf
+
