@@ -1,36 +1,71 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package model;
 
-import java.io.File;
-import java.net.URL;
-
+/**
+ *
+ * @author nsl
+ */
 public class Settings {
 	
-	/**
-	 * Location of the face detection xml
-	 */
-	//public final static URL FACE_DETECTION_PATH = 
-		//	Configuration.class.getResource("/res/tessdata" + File.separator + "haarcascade_frontalface_alt2.xml");
-	
-	public final static String FACE_DETECTION_PATH = "res/tessdata/haarcascade_frontalface_alt2.xml";
-	
-	public static boolean debugEnabled;
-	
-	public static enum OCR_MODE {
-		EACH_NUMBER,
-		TOTAL_NUMBER
+	public enum Algo{
+		DEFAULT,
+		MANUAL;
 	}
-	
-	public static enum FINDING_MODE {
-		DETECT_FACE,
-		ALL_IMAGE
+		
+	static private boolean EXIF = false;
+	static private boolean ADDITONNAL_DATA = false;
+	static private boolean BENCH = false;
+	static private boolean DEBUG = false;
+	static private Algo ALGO = Algo.DEFAULT;
+
+	static public boolean getEXIF() {
+		return Settings.EXIF;
 	}
-	
-	public static enum OCR_ENGINE {
-		CUSTOM,
-		TESSERACT
+
+	static private void setEXIF(boolean EXIF) {
+		Settings.EXIF = EXIF;
 	}
-	
-	public final static File DEBUG_DIRECTORY = new File("debug/");
-	
-	public final static String OCR_DATA_PATH = "res/";
+
+	static public boolean getADDITONNAL_DATA() {
+		return ADDITONNAL_DATA;
+	}
+
+	static private void setADDITONNAL_DATA(boolean ADDITONNAL_DATA) { Settings.ADDITONNAL_DATA = ADDITONNAL_DATA; }
+
+	static public boolean getBENCH() {
+		return BENCH;
+	}
+
+	static private void setBENCH(boolean BENCH) {
+		Settings.BENCH = BENCH;
+	}
+
+	static public boolean getDEBUG() {
+		return DEBUG;
+	}
+
+	static private void setDEBUG(boolean DEBUG) {
+		Settings.DEBUG = DEBUG;
+	}
+
+	static public Algo getALGO() {
+		return ALGO;
+	}
+
+	static private void setALGO(Algo ALGO) {
+		Settings.ALGO = ALGO;
+	}
+	static public void setSettings(boolean exif, boolean data, boolean bench, boolean debug, Algo algo)
+	{
+		Settings.setEXIF(exif);
+		Settings.setADDITONNAL_DATA(data);
+		Settings.setBENCH(bench);
+		Settings.setDEBUG(debug);
+		Settings.setALGO(algo);
+
+	}
 }

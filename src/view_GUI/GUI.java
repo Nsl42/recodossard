@@ -1,53 +1,53 @@
-package view_GUI;
+    package view_GUI;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashMap;
+    import controller.ProcessingCtrl;
+    import java.awt.BorderLayout;
+    import java.awt.Color;
+    import java.awt.Dimension;
+    import java.awt.GridBagConstraints;
+    import java.awt.GridBagLayout;
+    import java.awt.GridLayout;
+    import java.awt.Image;
+    import java.awt.Toolkit;
+    import java.awt.event.ActionEvent;
+    import java.awt.event.KeyEvent;
+    import java.awt.event.KeyListener;
+    import java.awt.event.MouseAdapter;
+    import java.awt.event.MouseEvent;
+    import java.io.File;
+    import java.io.IOException;
+    import java.util.ArrayList;
+    import java.util.Arrays;
+    import java.util.Enumeration;
+    import java.util.HashMap;
 
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.border.Border;
-import javax.swing.filechooser.FileNameExtensionFilter;
+    import javax.swing.AbstractButton;
+    import javax.swing.BorderFactory;
+    import javax.swing.Box;
+    import javax.swing.BoxLayout;
+    import javax.swing.ButtonGroup;
+    import javax.swing.ImageIcon;
+    import javax.swing.JButton;
+    import javax.swing.JCheckBox;
+    import javax.swing.JComponent;
+    import javax.swing.JFileChooser;
+    import javax.swing.JFrame;
+    import javax.swing.JLabel;
+    import javax.swing.JOptionPane;
+    import javax.swing.JPanel;
+    import javax.swing.JRadioButton;
+    import javax.swing.JScrollPane;
+    import javax.swing.JSeparator;
+    import javax.swing.JTabbedPane;
+    import javax.swing.JTextField;
+    import javax.swing.SwingConstants;
+    import javax.swing.border.Border;
+    import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class GUI extends JFrame{
+    public class GUI extends JFrame{
 
-	/**
-	 * JTextField for searching a number ofbib
-	 */
+
+        private static boolean containsList = false;
 	private static JTextField search;
 	/**
 	 * JPanel which contains all the component
@@ -184,14 +184,14 @@ public class GUI extends JFrame{
 	public GUI(){
 		super("RecoDossard");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		final ProcessingCtrl processCtrl = new ProcessingCtrl();
 		mainPanel = new JPanel();
 		boolean galleryIsExist = false;
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = 3*screenSize.width/4;
 		int height = 3*screenSize.height/4;
 
-		if (galleryIsExist){
+		if (GUI.containsList){
 			mainPanel.setLayout(new GridBagLayout());
 			gbc = new GridBagConstraints();
 			gbc.weightx = 1;
@@ -275,6 +275,23 @@ public class GUI extends JFrame{
 			location = new JLabel();
 			card1.add(location);
 			card1.setVisible(false);
+			JLabel picAnalyzed = new JLabel("Pictures analyzed : ../..");
+			JLabel success = new JLabel("Success : ../..");
+			JLabel fail = new JLabel("Fail : ../..");
+			JLabel advancedOptions = new JLabel("Advanced Options");
+			JCheckBox dataEXIF = new JCheckBox("EXIF data");
+			JCheckBox raceData = new JCheckBox("Race data");
+			card1.add(picAnalyzed);
+			card1.add(Box.createVerticalStrut(10));
+			card1.add(success);
+			card1.add(Box.createVerticalStrut(10));
+			card1.add(fail);
+		
+			card1.add(new JSeparator(SwingConstants.HORIZONTAL));
+			card1.add(advancedOptions);
+			card1.add(Box.createVerticalStrut(10));
+			card1.add(dataEXIF);
+			card1.add(raceData);
 			card2 = new JPanel();
 			card2.setLayout(new BoxLayout(card2, BoxLayout.Y_AXIS));
 			pbaInit = new ProgressBarAnalyze(false, false);
@@ -387,20 +404,33 @@ public class GUI extends JFrame{
 			});
 
 		}else{
-			mainPanel = new JPanel();
 			mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 			JLabel noGallery = new JLabel("No gallery");
 			noGallery.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 			JLabel addGalToStart = new JLabel("To start : Add a gallery");
 			addGalToStart.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-			JButton add = new JButton("Add Gallery");
+			final JButton add = new JButton("Add Gallery");
 			add.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-			mainPanel.add(Box.createVerticalStrut((height/2)-50));
+			add.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					JFileChooser jfc = new JFileChooser();
+					jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					jfc.setMultiSelectionEnabled(false);
+					System.out.println("ADDED");
+					if(jfc.showOpenDialog(add) == JFileChooser.APPROVE_OPTION){
+						processCtrl.acknowledge(jfc.getSelectedFile());
+						GUI.containsList = true;
+						mainPanel.validate();
+						mainPanel.repaint();
+					System.out.println("repaint");
+					}
+				}
+			});
 			mainPanel.add(noGallery);
 			mainPanel.add(addGalToStart);
 			mainPanel.add(add);
 		}
-
+		
 		add(mainPanel);
 
 

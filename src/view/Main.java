@@ -1,122 +1,81 @@
 package view;
 
-import java.awt.Image;
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
 
-import controller.Controller;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.MissingArgumentException;
+import org.apache.commons.cli.Options;
+
+
+import controller.PhotoListCtrl;
+import controller.ProcessingCtrl;
 
 public class Main{
 	
-	static Controller myController = new Controller();
+	private static PhotoListCtrl photoListController = new PhotoListCtrl();
+	private static ProcessingCtrl processingController = new ProcessingCtrl();
+	
+	private static Options options = new Options();
+	private static boolean debugIsEnabled = false;
+	private static boolean verboseIsEnabled  = false;
+	private static boolean exifIsEnabled  = false;
+	private static boolean benchmarkIsEnabled = false;
+	
+	private static void usage() {
+		HelpFormatter formatter = new HelpFormatter();
+		formatter.printHelp( "java Main [-h] [--help] [-v] <image file> [<output file>]"
+			, options );
+	}
 	
 	public static void main(String args[]) throws Exception{
 		
-		ArrayList<Integer> res = new ArrayList();
-		boolean optionVactive=false;
-		if (args.length == 0) {
-			System.out.println("Usage : java Main [-h] [--help] [-v] <image file> [<output file>]");
+		options.addOption("h","help",false, "Display the help.");
+		options.addOption("v", "verbose", false, "Display more messages.");
+		options.addOption("f", "file", true, "Image or directory to analyse.");
+		options.addOption("d", "debug", false, "Image or directory to analyse.");
+		options.addOption("b", "bench", false, "Wether to perform benchmark");
+		options.addOption("e", "exif", false, "Turns on exif analysis");
 		
-		}else if (args.length == 1){
-			File file = new File(args[0]);
-			if(args[0].equals("-h") || args[0].equals("--help") || args[0].equals("-v")){
-				System.out.println("Usage : java Main [-h] [--help] [-v] <image file> [<output file>]");
-			}else if (file.exists() & file.isFile()){ //fichier
-				res = analyseFile(args[0], optionVactive);
-			}else if(file.exists() & file.isDirectory()){ //répertoire
-				res = analyseDirectory(args[0], optionVactive, res);
-			}else{
-				System.out.println("Usage : java Main [-h] [--help] [-v] <image file> [<output file>]");
-			}
+		File file = null;
 		
-		}else if(args.length == 2){
-			File file = new File(args[0]);
-			if(args[0].equals("-v")){
-				optionVactive=true;
-				file = new File(args[1]);
-				if(file.exists() & file.isFile()) { // fichier
-					res = analyseFile(args[1], optionVactive);
-				}else if (file.exists() & file.isDirectory()) { //repertoire
-					res = analyseDirectory(args[1], optionVactive, res);
-				}else{
-					System.out.println("Err: File doesn't exsit");
-					System.out.println("Usage : java Main [-h] [--help] [-v] <image file> [<output file>]");
-				}
-			}else if(file.exists() & file.isFile()) { //fichier
-				res=analyseFile(args[0], optionVactive);
-			}else if(file.exists() & file.isDirectory()) { //repertoire
-				res = analyseDirectory(args[0], optionVactive, res);
-			}else{
-				System.out.println("Err: File doesn't exsit");
-				System.out.println("Usage : java Main [-h] [--help] [-v] <image file> [<output file>]");
-			}
-		
-		}else{
-			System.out.println("Usage : java Main [-h] [--help] [-v] <image file> [<output file>]");
-		}
-		if(!res.isEmpty()){
-			for(int i=0; i < res.size(); i++){
-				System.out.println(res.get(i));
-			}
-		}
-	}
-
-	public static ArrayList<Integer> analyseFile(String file, boolean optionV) throws Exception{
-		boolean valid=true;
-		ArrayList<Integer> result = new ArrayList<Integer>();
+		CommandLineParser parser = new DefaultParser();
 		try {
-			Image image=ImageIO.read(new File(file));
-			if (image == null) {
-				valid = false;
-				System.out.println("The file "+file+" could not be opened , it is not an image");
+			CommandLine line = parser.parse(options, args);
+			if (line.hasOption("h")) {
+				usage();
 			}
-			// ---------  Call function for OCR
-			result = myController.findNumber(file);
-			if(optionV){
-				System.out.println("File " + file + " done");
+			if (line.hasOption("v")) {
+				verboseIsEnabled = true;
 			}
-		} catch(IOException ex) {
-			valid=false;
-			System.out.println("The file "+file+" could not be opened , an error occurred.");
+			if (line.hasOption("f")) {
+				file = new File(line.getOptionValue("f"));
+			}
+			if (line.hasOption("d")) {
+				debugIsEnabled = true;
+			}
+			if (line.hasOption("e")) {
+				exifIsEnabled = true;
+			}
+			if (line.hasOption("b")) {
+				benchmarkIsEnabled = true;
+			}
+			
+		} catch(MissingArgumentException e) {
+			System.err.println("Option <" + e.getOption().getOpt() + "> need an argument!");
+			usage();
+			System.exit(1);
+		} catch(ParseException e) {
+			System.out.println( "Unexpected exception:" + e.getMessage() );
 		}
 		
-		return result; // return arrayList with number of bibs 
+		processingController.setProcessSettings(exifIsEnabled, false, benchmarkIsEnabled, debugIsEnabled);
+		
+		System.out.println(processingController.processing(processingController.acknowledge(file)));
 	}
-
-	public static ArrayList<Integer> analyseDirectory(String directory, boolean optionV, ArrayList<Integer> result){
-        File file = new File(directory);
-        File[] files = file.listFiles();
-        ArrayList<Integer> res;
-        if (result.isEmpty()){
-        	res = new ArrayList();
-        }else {
-        	res = result;
-        }
-        if (files != null) {
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].isDirectory() == true) {
-                	res = analyseDirectory(files[i].getAbsolutePath(), optionV, res);
-                } else {
-                	try {
-            			Image image=ImageIO.read(files[i]);
-            			if (image == null) {
-            				System.out.println("The file "+files[i]+" could not be opened , it is not an image");
-            			}
-            			// ---------  Call function for OCR
-            			if(optionV){
-            				System.out.println("File " + files[i] + " done");
-            			}
-            		} catch(IOException ex) {
-            			System.out.println("The file "+files[i]+" could not be opened , an error occurred.");
-            		}
-                }
-            }
-        }
-		return res;
-	}
-
 }
 

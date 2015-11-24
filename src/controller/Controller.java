@@ -7,8 +7,6 @@ import model.PhotoList;
 
 public class Controller {
 	
-	public static HashMap<UUID, PhotoList> loadedPhotoLists;
-	
-	
+	public static HashMap<UUID, PhotoList> loadedPhotoLists = new HashMap<UUID, PhotoList>();	
 	
 }

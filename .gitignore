@@ -9,7 +9,8 @@ build.xml
 /res/
 /tessdata
 build/
-data/
-lib/
+dossard.jpg
 manifest.mf
-
+*.un~
+lib
+data/
