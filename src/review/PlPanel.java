@@ -20,21 +20,18 @@ import javax.swing.JScrollPane;
 public class PlPanel {
 	private JPanel galPicture;
 	private JScrollPane scrollPane;
-	private GridBagConstraints gbc = new GridBagConstraints();
+	private GridBagConstraints gbc ;
+	private GridLayout gl ;
 	public PlPanel()
 	{
-		GridLayout gl = new GridLayout(0,7);
+		gl = new GridLayout(0,7);
+		gbc = new GridBagConstraints();
 		gbc.gridx = 1;
 		gbc.gridwidth = 6;
 		gbc.gridheight = 2;
 		gbc.gridy = 1;
-		gl.setVgap(10);
 		this.galPicture = new JPanel();
 		//Getting the labels of existing imgmodels
-		this.scrollPane = new JScrollPane(galPicture);
-		this.scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		this.scrollPane.setPreferredSize(new Dimension(350,350));
-		galPicture.setLayout(gl);
 
 	}
 	
@@ -50,10 +47,16 @@ public class PlPanel {
 
 	}
 	public GridBagConstraints getGbc(){
+		gbc.anchor = GridBagConstraints.PAGE_START;
 		return this.gbc;
 	}
 	public JScrollPane getscrollPane()
 	{
+		gl.setVgap(10);
+		this.scrollPane = new JScrollPane(galPicture);
+		this.scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		this.scrollPane.setPreferredSize(new Dimension(350,350));
+		this.galPicture.setLayout(gl);
 		return this.scrollPane;
 	}
 

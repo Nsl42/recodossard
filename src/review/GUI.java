@@ -6,6 +6,8 @@
 package review;
 
 import controller.ProcessingCtrl;
+import java.awt.BorderLayout;
+import java.awt.GridBagLayout;
 import javax.swing.JFrame;
 
 /**
@@ -19,6 +21,7 @@ public class GUI extends JFrame{
 		 final ProcessingCtrl processCtrl = new ProcessingCtrl();
 		GUI gui = new GUI();
 		MainPanel mp = new MainPanel();
+		gui.setLayout(new BorderLayout());
 		NoPlPanel nplp = new NoPlPanel();
 		PlPanel plp = new PlPanel();
 		
@@ -26,11 +29,12 @@ public class GUI extends JFrame{
 
 		while(processCtrl.loadedPhotoLists.isEmpty())
 		{
-		gui.add(nplp);
-		gui.setVisible(true);
+			gui.add(nplp, BorderLayout.CENTER);
+			gui.setVisible(true);
 		}
 		gui.remove(nplp);
-		gui.add(plp.getscrollPane(), plp.getGbc());
+		mp.add(plp.getscrollPane(), plp.getGbc());
+		gui.add(mp);
 		gui.validate();
 		gui.repaint();
 		
