@@ -77,13 +77,18 @@ public class Main{
 				file = new File(line.getOptionValue("rd"));
 			}
 			
-			
 		} catch(MissingArgumentException e) {
 			System.err.println("Option <" + e.getOption().getOpt() + "> need an argument!");
 			usage();
 			System.exit(1);
 		} catch(ParseException e) {
 			System.out.println("Unexpected exception: " + e.getMessage() );
+		}
+		
+		if (file == null) {
+			System.err.println("Please specify a file or a directory with option <f>.");
+			usage();
+			System.exit(1);
 		}
 		
 		processingController.setProcessSettings(exifIsEnabled, raceDataIsEnabled, benchmarkIsEnabled, debugIsEnabled);
