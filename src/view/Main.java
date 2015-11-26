@@ -90,7 +90,7 @@ public class Main{
 		processingController.processing(plID);
 		if (raceDataIsEnabled) {
 			photoListController.addRaceData(plID, file);
-			photoListController.processRaceData(plID);
+			photoListController.processAdditionalData(plID);
 		}
 		if (file.isFile()) {
 			System.out.println(processingController.loadedPhotoLists.get(processingController.getPlidFromImgid(plID)).toJSON());
