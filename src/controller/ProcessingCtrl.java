@@ -56,9 +56,10 @@ public class ProcessingCtrl extends Controller {
 	public String processing(UUID id)
 	{
 		UUID gallery = this.getPlidFromImgid(id);
-		if(gallery != null)
-			return imgProcessing(loadedPhotoLists.get
-		(gallery).getPhoto(id));
+		if(gallery != null) {
+			return imgProcessing(loadedPhotoLists.get(gallery).getPhoto(id));
+		}
+		
 		else
 		{
 			return listProcessing(loadedPhotoLists.get(id));
@@ -74,7 +75,7 @@ public class ProcessingCtrl extends Controller {
 	public String imgProcessing(ImgModel im)
 	{
 		im.setProcessed(true);
-		im.getResult().addAll(engine.launchDetection(true, im));
+		im.getResult().addAll(engine.launchDetection(im));
 		return im.toJSON();
 
 	}
@@ -92,7 +93,7 @@ public class ProcessingCtrl extends Controller {
 		{
 				to_ret = im;
 				to_ret.setProcessed(true);
-				to_ret.getResult().addAll(engine.launchDetection(true, im));
+				to_ret.getResult().addAll(engine.launchDetection(im));
 		}
 			
 		return pl.toJSON();

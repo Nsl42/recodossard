@@ -24,6 +24,7 @@ public class PhotoList{
 	private ArrayList<PhotoList> sublists;
 	private Settings settings;
 	private DataModel data;
+	private RaceData raceData;
 	
 	public PhotoList(File f) {
 
@@ -43,6 +44,11 @@ public class PhotoList{
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public void setRaceData(RaceData raceData) {
+		this.raceData = raceData;
+	}
+	
 	/* All objects except the name NEVER should be setted with a setter */
 	
 	public UUID getId() {
@@ -60,6 +66,11 @@ public class PhotoList{
 	public DataModel getData() {
 		return data;
 	}
+	
+	public RaceData getRaceData() {
+		return this.raceData;
+	}
+	
 	/* Business Methods */
 
 	/**
@@ -192,4 +203,5 @@ public class PhotoList{
 				this.getPhotolist().remove(im);
 		}
 	}
+
 }
