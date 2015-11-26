@@ -55,6 +55,7 @@ public class Main{
 			CommandLine line = parser.parse(options, args);
 			if (line.hasOption("h")) {
 				usage();
+				System.exit(0);
 			}
 			if (line.hasOption("v")) {
 				verboseIsEnabled = true;
