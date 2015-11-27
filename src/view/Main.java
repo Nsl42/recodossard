@@ -17,7 +17,6 @@ import controller.ProcessingCtrl;
 
 public class Main{
 	
-	private static PhotoListCtrl photoListController = new PhotoListCtrl();
 	private static ProcessingCtrl processingController = new ProcessingCtrl();
 	
 	private static Options options = new Options();
