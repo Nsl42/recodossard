@@ -2,11 +2,8 @@ package view;
 
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 import java.io.File;
-import java.util.Map;
 import java.util.UUID;
 
-
-import model.PhotoList;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -21,8 +18,8 @@ import controller.ProcessingCtrl;
 
 public class Main{
 	
-	private static PhotoListCtrl photoListController = new PhotoListCtrl();
 	private static ProcessingCtrl processingController = new ProcessingCtrl();
+	private static PhotoListCtrl photoListCtrl = new PhotoListCtrl();
 	
 	private static Options options = new Options();
 	private static boolean debugIsEnabled = false;
@@ -74,7 +71,7 @@ public class Main{
 			}
 			if (line.hasOption("rd")) {
 				raceDataIsEnabled = true;
-				file = new File(line.getOptionValue("rd"));
+				fileToAnalyse = new File(line.getOptionValue("rd"));
 			}
 			
 		} catch(MissingArgumentException e) {
@@ -95,8 +92,8 @@ public class Main{
 		UUID plID = processingController.acknowledge(file);
 		processingController.processing(plID);
 		if (raceDataIsEnabled) {
-			photoListController.addRaceData(plID, file);
-			photoListController.processAdditionalData(plID);
+			photoListCtrl.addRaceData(plID, fileToAnalyse);
+			photoListCtrl.processAdditionalData(plID);
 		}
 		if (file.isFile()) {
 			System.out.println(processingController.loadedPhotoLists.get(processingController.getPlidFromImgid(plID)).toJSON());

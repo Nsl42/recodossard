@@ -61,7 +61,7 @@ public class ImgModel{
 	public ArrayList<Integer> getResult() {
 		return result;
 	}
-	public Object getFile() {
+	public File getFile() {
 		return this.f;
 	}
     

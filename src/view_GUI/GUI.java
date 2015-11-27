@@ -248,6 +248,7 @@
 			jScrollPane.setPreferredSize(new Dimension(36*width/100, 70*height/100));
 			galPicture.setLayout(gl);
 			mainPanel.add(jScrollPane, gbc);
+			//TABBED PANE
 
 			gbc.gridx = 1;
 			gbc.gridwidth = 7;

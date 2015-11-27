@@ -10,13 +10,12 @@ import model.Settings;
 
 public class ProcessingCtrl extends Controller {
 	
-	CVOCR engine;
+	static CVOCR engine = new CVOCR();
 	
 	/**
 	 * Default and only constructor you ever need
 	 */
 	public ProcessingCtrl() {
-	this.engine = new CVOCR();
 	}
 
 	/**
@@ -35,7 +34,7 @@ public class ProcessingCtrl extends Controller {
 	 * @param imgId : the UID object of the Img you  want to find
 	 * @return  UUID ret : The UUID of the gallery you were looking for
 	 */
-	public UUID getPlidFromImgid(UUID imgId)
+	static public UUID getPlidFromImgid(UUID imgId)
 	{
 		UUID ret = null;
 		for(UUID listID : ProcessingCtrl.loadedPhotoLists.keySet())
@@ -86,7 +85,7 @@ public class ProcessingCtrl extends Controller {
 	 * @param pl the PhotoList object you want to run detection on
 	 * @return String JSON format, the photolist with the detection done
 	 */
-	public String listProcessing(PhotoList pl)
+	public static String listProcessing(PhotoList pl)
 	{
 		ImgModel to_ret = null;
 		for(ImgModel im : pl.getPhotolist())
@@ -106,13 +105,13 @@ public class ProcessingCtrl extends Controller {
 	 * @return UUID The uuid of the created object, either a PhotoList, or 
 	 * a ImgModel, whether the file was a image or a directory
 	 */
-	public UUID acknowledge(File f)
+	public static UUID acknowledge(File f)
 	{
 		if(!f.isDirectory())
 		{
 			PhotoList pl = new PhotoList(f.getParentFile());
 			ImgModel im = pl.addPhoto(f);
-			this.loadedPhotoLists.put(pl.getId(), pl);
+			ProcessingCtrl.loadedPhotoLists.put(pl.getId(), pl);
 			return(im.getId());
 		}
 		else
@@ -122,8 +121,8 @@ public class ProcessingCtrl extends Controller {
 				if(iff.isFile())
 					pl.addPhoto(iff);
 				else
-					pl.getSublists().add(this.dir_ack(iff));
-			this.loadedPhotoLists.put(pl.getId(), pl);
+					pl.getSublists().add(ProcessingCtrl.dir_ack(iff));
+			ProcessingCtrl.loadedPhotoLists.put(pl.getId(), pl);
 			return(pl.getId());
 		}
 	}
@@ -134,7 +133,7 @@ public class ProcessingCtrl extends Controller {
 	 * @param f The File pointing to the directory to load
 	 * @return Photolist representing the object for the directory.
 	 */
-	private PhotoList dir_ack(File f)
+	static private PhotoList dir_ack(File f)
 	{
 		PhotoList pl = new PhotoList(f);
 		for(File iff : f.listFiles())
