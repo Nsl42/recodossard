@@ -24,6 +24,7 @@ public class PhotoList{
 	private ArrayList<PhotoList> sublists;
 	private Settings settings;
 	private DataModel data;
+	private File f;
 	
 	public PhotoList(File f) {
 
@@ -33,6 +34,7 @@ public class PhotoList{
 		this.photolist = new ArrayList<ImgModel>();
 		this.sublists = new ArrayList<PhotoList>();
 		this.data = new DataModel();
+		this.f = f;
 	}
 	/* Getters & Setters */
 	
@@ -60,8 +62,12 @@ public class PhotoList{
 	public DataModel getData() {
 		return data;
 	}
-	/* Business Methods */
 
+	public File getFile() {
+		return f;
+	}
+	
+	/* Business Methods */
 	/**
 	 * getPhoto Returns a photo contained in the photoList, given its UUID
 	 * @param photoId The ID of the photo to get
@@ -191,5 +197,13 @@ public class PhotoList{
 			if(im.getId().equals(idImage))
 				this.getPhotolist().remove(im);
 		}
+	}
+	/**
+	 * ToString override for display purposes only
+	 */
+	@Override
+	public String toString()
+	{
+		return this.getName();
 	}
 }
