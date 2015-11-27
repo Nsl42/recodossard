@@ -6,7 +6,9 @@
 package review;
 
 import controller.ProcessingCtrl;
+import controller.UICtrl;
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.JFrame;
 
@@ -16,28 +18,30 @@ import javax.swing.JFrame;
  */
 public class GUI extends JFrame{
 	
+	public GUI(String s)
+	{
+		super(s);
+
+	}
 	public static void main(String args[])
 	{
 		 final ProcessingCtrl processCtrl = new ProcessingCtrl();
-		GUI gui = new GUI();
-		MainPanel mp = new MainPanel();
+		GUI gui = new GUI("RecoDossard");
 		gui.setLayout(new BorderLayout());
-		NoPlPanel nplp = new NoPlPanel();
-		PlPanel plp = new PlPanel();
-		
 		// Lecture du JSON, IF ELSE
 
-		while(processCtrl.loadedPhotoLists.isEmpty())
+		NoPlPanel nplp = new NoPlPanel();
+		while(true)
 		{
-			gui.add(nplp, BorderLayout.CENTER);
-			gui.setVisible(true);
+			while(processCtrl.loadedPhotoLists.isEmpty())
+			{
+				gui.add(nplp, BorderLayout.CENTER);
+				gui.setVisible(true);
+			}
+			gui.remove(nplp);
+			gui.add(UICtrl.getMp(), BorderLayout.CENTER);
+			gui.invalidate();		
+			gui.repaint();
 		}
-		gui.remove(nplp);
-		mp.add(plp.getscrollPane(), plp.getGbc());
-		gui.add(mp);
-		gui.validate();
-		gui.repaint();
-		
-		
 	}
 }

@@ -6,6 +6,7 @@
 package review;
 
 import controller.ProcessingCtrl;
+import controller.UICtrl;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.BoxLayout;
@@ -29,22 +30,9 @@ public class NoPlPanel extends JPanel{
 		noGallery.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 		JLabel addGalToStart = new JLabel("To start : Add a gallery");
 		addGalToStart.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-		final JButton add = new JButton("Add Gallery");
-		add.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-		add.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				JFileChooser jfc = new JFileChooser();
-				jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				jfc.setMultiSelectionEnabled(false);
-				System.out.println("ADDED");
-				if(jfc.showOpenDialog(add) == JFileChooser.APPROVE_OPTION){
-					processCtrl.acknowledge(jfc.getSelectedFile());
-				}
-			}
-		});
 		this.add(noGallery);
 		this.add(addGalToStart);
-		this.add(add);
+		this.add(UICtrl.getAddGalleryButton());
 	}
 	
 }
