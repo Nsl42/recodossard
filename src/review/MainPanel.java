@@ -70,7 +70,7 @@ public class MainPanel extends JPanel {
 		analyseButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event){
-				System.out.println(ProcessingCtrl.listProcessing(UICtrl.getCurrent()));
+//				System.out.println(ProcessingCtrl.listProcessing(UICtrl.getCurrent()));
 				System.out.println("Processing...");
 				
 			} });

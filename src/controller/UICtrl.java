@@ -31,9 +31,7 @@ import review.PlPanel;
  * @author nsl
  */
 public class UICtrl {
-	static private PhotoList current;
 	static private ImgModel selected;
-	static private HashMap<UUID, ArrayList<JLabel>> labels = new HashMap<>();
 	static public GridBagConstraints gbc = new GridBagConstraints();
 
 	public static JButton getAddGalleryButton() {
@@ -48,9 +46,9 @@ public class UICtrl {
 				if(jfc.showOpenDialog(add) == JFileChooser.APPROVE_OPTION){
 						UUID uid = ProcessingCtrl.
 							acknowledge(jfc.getSelectedFile());
-						UICtrl.labels.put(uid, UICtrl.getlabels(ProcessingCtrl.loadedPhotoLists.get(uid)));
-						UICtrl.setCurrent(uid);
-						UICtrl.pll.add(UICtrl.getCurrent());
+//						UICtrl.labels.put(uid, UICtrl.getlabels(ProcessingCtrl.loadedPhotoLists.get(uid)));
+//						UICtrl.setCurrent(uid);
+//						UICtrl.pll.add(UICtrl.getCurrent());
 				}
 			}
 		});
@@ -59,7 +57,7 @@ public class UICtrl {
 	private static MainPanel mp = new MainPanel();
 	static private PlPanel plp = new PlPanel();
 	static private DataPanel dp = new DataPanel();
-	static private PlList pll = new PlList();
+	public static PlList pll = new PlList();
 	
 
 	
@@ -83,15 +81,6 @@ public class UICtrl {
 				ProcessingCtrl.getPlidFromImgid(selected)).getPhotolist())
 				if(im.getId().equals(selected))
 					UICtrl.selected = im;
-	}
-	
-	static public void setCurrent(UUID toCurrent) {
-		UICtrl.current = ProcessingCtrl.loadedPhotoLists.get(toCurrent);
-		UICtrl.getPlp().refresh(current);
-	}
-	
-	static public PhotoList getCurrent() {
-		return current;
 	}
 	
 	public static DataPanel getDp() {
@@ -133,7 +122,9 @@ public class UICtrl {
 	}
 	static public  ArrayList<JLabel> getlabels(UUID id)
 	{
-		return UICtrl.labels.get(id);
+//		return UICtrl.labels.get(id);
+return null;
+
 	}
 
 	public static MainPanel getMp() {

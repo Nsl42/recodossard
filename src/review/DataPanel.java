@@ -81,8 +81,8 @@ public class DataPanel extends JPanel{
 	}
 	public DataPanel refreshData(){
 		
-		PhotoList pl = UICtrl.getCurrent();
-		this.imgCount = pl.getPhotolist().size();
+	//	PhotoList pl = UICtrl.getCurrent();
+	//	this.imgCount = pl.getPhotolist().size();
 		this.picAnalyzed.setText("Pictures analyzed : " + this.analysedCount + "/" + this.imgCount );
 		this.success.setText("Success : " + this.successCount);
 		this.fail.setText("Fail : "+ this.failCount);

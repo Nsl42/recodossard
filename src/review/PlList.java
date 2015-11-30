@@ -37,7 +37,8 @@ public class PlList extends JList{
 					PhotoList pl = (PhotoList) UICtrl.getPll().getSelectedValue();
 					if(!(pl == null)) {
 							UICtrl.getPlp().refresh(pl);
-							UICtrl.setCurrent(pl.getId());
+
+//							UICtrl.setCurrent(pl.getId());
 						}
 				}
 				
