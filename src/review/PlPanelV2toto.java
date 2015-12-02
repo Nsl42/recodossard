@@ -6,7 +6,6 @@
 package review;
 
 import controller.UICtrlV2;
-import java.awt.GridLayout;
 import java.util.UUID;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,11 +17,6 @@ import javax.swing.JScrollPane;
  */
 public class PlPanelV2 extends javax.swing.JPanel {
 
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane  jScrollPane1 = new JScrollPane(this);
-    // End of variables declaration//GEN-END:variables
-	
 	/**
 	 * Creates new form PlPanelV2
 	 */
@@ -40,37 +34,48 @@ public class PlPanelV2 extends javax.swing.JPanel {
         // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
         private void initComponents() {
 
+                jScrollPane1 = new javax.swing.JScrollPane();
+
                 jScrollPane1.setBackground(new java.awt.Color(102, 255, 153));
                 jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
                 jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
                 jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-                GridLayout layout = new GridLayout(0,7);
-                layout.setVgap(10);
+                javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
                 this.setLayout(layout);
-
-
+                layout.setHorizontalGroup(
+                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(30, Short.MAX_VALUE))
+                );
+                layout.setVerticalGroup(
+                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(28, 28, 28)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(34, Short.MAX_VALUE))
+                );
         }// </editor-fold>//GEN-END:initComponents
 
 	public void refresh(UUID pl) {
-		//JPanel tmp = new JPanel();
+		JPanel tmp = new JPanel();
 		int i = 0;
 		for(JLabel jl : UICtrlV2.labels.get(pl)) {
-			
-
-			// Modifier files par pl surement pour récupérer la photo en elle même (en récupérant le chemin).
-			this.add(jl);
 			jl.setVisible(true);
-			//tmp.add(jl);
-			//System.out.println("tmp  " + tmp.getComponents()[i].toString());
-			//i++;
+			tmp.add(jl);
+			System.out.println("tmp  " + tmp.getComponents()[i].toString());
+			i++;
 		}
-		//tmp.setVisible(true);
-		this.repaint();
-		//this.jScrollPane1.setVisible(true);
-		//this.jScrollPane1.revalidate();
-		//this.jScrollPane1.repaint();
+		tmp.setVisible(true);
+		this.jScrollPane1.setVisible(true);
+		this.jScrollPane1.revalidate();
+		this.jScrollPane1.repaint();
 
 	}
 
+        // Variables declaration - do not modify//GEN-BEGIN:variables
+        private javax.swing.JScrollPane jScrollPane1;
+        // End of variables declaration//GEN-END:variables
 }

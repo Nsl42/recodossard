@@ -5,11 +5,20 @@
  */
 package review;
 
+import controller.UICtrlV2;
+import model.ImgModel;
+import model.PhotoList;
+
 /**
  *
  * @author nsl
  */
 public class DataPanelV2 extends javax.swing.JPanel {
+
+	private int imgCount = 0;
+	private int analysedCount = 0;
+	private int failCount = 0;
+	private int successCount = 0;
 
 	/**
 	 * Creates new form DataPanelV2
@@ -29,23 +38,23 @@ public class DataPanelV2 extends javax.swing.JPanel {
 
                 jTabbedPane1 = new javax.swing.JTabbedPane();
                 jPanel1 = new javax.swing.JPanel();
-                jLabel1 = new javax.swing.JLabel();
-                jLabel2 = new javax.swing.JLabel();
-                jLabel3 = new javax.swing.JLabel();
+                path = new javax.swing.JLabel();
+                result = new javax.swing.JLabel();
+                exif = new javax.swing.JLabel();
                 jLabel4 = new javax.swing.JLabel();
                 jLabel5 = new javax.swing.JLabel();
                 jLabel6 = new javax.swing.JLabel();
                 jPanel2 = new javax.swing.JPanel();
                 jPanel3 = new javax.swing.JPanel();
-                jLabel7 = new javax.swing.JLabel();
-                jLabel8 = new javax.swing.JLabel();
-                jLabel9 = new javax.swing.JLabel();
+                picAnalysed = new javax.swing.JLabel();
+                sucess = new javax.swing.JLabel();
+                fails = new javax.swing.JLabel();
 
-                jLabel1.setText("Path : ");
+                path.setText("Path : ");
 
-                jLabel2.setText("Bib numbers :");
+                result.setText("Bib numbers :");
 
-                jLabel3.setText("EXIF data :");
+                exif.setText("EXIF data :");
 
                 javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
                 jPanel1.setLayout(jPanel1Layout);
@@ -55,35 +64,35 @@ public class DataPanelV2 extends javax.swing.JPanel {
                                 .addContainerGap()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jLabel1)
+                                                .addComponent(path)
                                                 .addGap(18, 18, 18)
                                                 .addComponent(jLabel4))
                                         .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jLabel2)
+                                                .addComponent(result)
                                                 .addGap(18, 18, 18)
                                                 .addComponent(jLabel5))
                                         .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jLabel3)
+                                                .addComponent(exif)
                                                 .addGap(18, 18, 18)
                                                 .addComponent(jLabel6)))
-                                .addContainerGap(429, Short.MAX_VALUE))
+                                .addContainerGap(453, Short.MAX_VALUE))
                 );
                 jPanel1Layout.setVerticalGroup(
                         jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(34, 34, 34)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel1)
+                                        .addComponent(path)
                                         .addComponent(jLabel4))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel2)
+                                        .addComponent(result)
                                         .addComponent(jLabel5))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel3)
+                                        .addComponent(exif)
                                         .addComponent(jLabel6))
-                                .addContainerGap(48, Short.MAX_VALUE))
+                                .addContainerGap(72, Short.MAX_VALUE))
                 );
 
                 jLabel4.getAccessibleContext().setAccessibleName("lPath");
@@ -96,20 +105,20 @@ public class DataPanelV2 extends javax.swing.JPanel {
                 jPanel2.setLayout(jPanel2Layout);
                 jPanel2Layout.setHorizontalGroup(
                         jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 556, Short.MAX_VALUE)
+                        .addGap(0, 580, Short.MAX_VALUE)
                 );
                 jPanel2Layout.setVerticalGroup(
                         jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 163, Short.MAX_VALUE)
+                        .addGap(0, 187, Short.MAX_VALUE)
                 );
 
                 jTabbedPane1.addTab("Analyze", jPanel2);
 
-                jLabel7.setText("Pictures analyzed :");
+                picAnalysed.setText("Pictures analyzed :");
 
-                jLabel8.setText("Success :");
+                sucess.setText("Success :");
 
-                jLabel9.setText("Fails :");
+                fails.setText("Fails :");
 
                 javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
                 jPanel3.setLayout(jPanel3Layout);
@@ -118,21 +127,21 @@ public class DataPanelV2 extends javax.swing.JPanel {
                         .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel7)
-                                        .addComponent(jLabel8)
-                                        .addComponent(jLabel9))
-                                .addContainerGap(408, Short.MAX_VALUE))
+                                        .addComponent(picAnalysed)
+                                        .addComponent(sucess)
+                                        .addComponent(fails))
+                                .addContainerGap(432, Short.MAX_VALUE))
                 );
                 jPanel3Layout.setVerticalGroup(
                         jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(33, 33, 33)
-                                .addComponent(jLabel7)
+                                .addComponent(picAnalysed)
                                 .addGap(18, 18, 18)
-                                .addComponent(jLabel8)
+                                .addComponent(sucess)
                                 .addGap(18, 18, 18)
-                                .addComponent(jLabel9)
-                                .addContainerGap(49, Short.MAX_VALUE))
+                                .addComponent(fails)
+                                .addContainerGap(73, Short.MAX_VALUE))
                 );
 
                 jTabbedPane1.addTab("Analysis Results", jPanel3);
@@ -141,36 +150,52 @@ public class DataPanelV2 extends javax.swing.JPanel {
                 this.setLayout(layout);
                 layout.setHorizontalGroup(
                         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap())
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
                 );
                 layout.setVerticalGroup(
                         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGap(27, 27, 27)
-                                .addComponent(jTabbedPane1)
-                                .addContainerGap())
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
                 );
 
                 jTabbedPane1.getAccessibleContext().setAccessibleName("Picture Data");
         }// </editor-fold>//GEN-END:initComponents
 
+public DataPanelV2 refreshData(){
+		
+		PhotoList pl = UICtrlV2.getCurrent();
+		this.imgCount = pl.getPhotolist().size();
+		this.picAnalysed.setText("Pictures analyzed : " + this.analysedCount + "/" + this.imgCount );
+		this.sucess.setText("Success : " + this.successCount);
+		this.fails.setText("Fail : "+ this.failCount);
+		return this;
 
+	}
+	public DataPanelV2 refreshImg() {
+		ImgModel im = UICtrlV2.getSelected();
+		if (im == null) {
+			this.path.setText("Path : ");
+			this.result.setText("Bibs : ");
+		} else {
+			this.path.setText("Path : " + im.getPath());
+			this.result.setText((im.getResult().isEmpty()) ? "Bibs : "
+				+ "not analyzed" : im.getResult().toString());
+			}
+		return this;
+	}
+	
         // Variables declaration - do not modify//GEN-BEGIN:variables
-        private javax.swing.JLabel jLabel1;
-        private javax.swing.JLabel jLabel2;
-        private javax.swing.JLabel jLabel3;
+        private javax.swing.JLabel exif;
+        private javax.swing.JLabel fails;
         private javax.swing.JLabel jLabel4;
         private javax.swing.JLabel jLabel5;
         private javax.swing.JLabel jLabel6;
-        private javax.swing.JLabel jLabel7;
-        private javax.swing.JLabel jLabel8;
-        private javax.swing.JLabel jLabel9;
         private javax.swing.JPanel jPanel1;
         private javax.swing.JPanel jPanel2;
         private javax.swing.JPanel jPanel3;
         private javax.swing.JTabbedPane jTabbedPane1;
+        private javax.swing.JLabel path;
+        private javax.swing.JLabel picAnalysed;
+        private javax.swing.JLabel result;
+        private javax.swing.JLabel sucess;
         // End of variables declaration//GEN-END:variables
 }

@@ -5,6 +5,8 @@
  */
 package review;
 
+import controller.ProcessingCtrl;
+import controller.UICtrlV2;
 import javax.swing.JScrollPane;
 
 /**
@@ -24,6 +26,10 @@ public class MainPanelV2 extends javax.swing.JPanel {
 	{
 		return this.plPanelV22;
 	}
+	public  DataPanelV2 getDp()
+	{
+		return this.dataPanelV21;
+	}
 
 	/**
 	 * This method is called from within the constructor to initialize the
@@ -36,62 +42,154 @@ public class MainPanelV2 extends javax.swing.JPanel {
 
                 jScrollPane1 = new javax.swing.JScrollPane();
                 jTree1 = new javax.swing.JTree();
+                plPanelV22 = new review.PlPanelV2();
+                jToolBar1 = new javax.swing.JToolBar();
+                jButton3 = new javax.swing.JButton();
+                jButton4 = new javax.swing.JButton();
                 jButton1 = new javax.swing.JButton();
                 jButton2 = new javax.swing.JButton();
-                dataPanelV22 = new review.DataPanelV2();
-                plPanelV22 = new review.PlPanelV2();
+                jSeparator1 = new javax.swing.JToolBar.Separator();
+                jToolBar2 = new javax.swing.JToolBar();
+                analyseGal = new javax.swing.JButton();
+                analysePhoto = new javax.swing.JButton();
+                jButton7 = new javax.swing.JButton();
+                jButton8 = new javax.swing.JButton();
+                dataPanelV21 = new review.DataPanelV2();
 
                 jScrollPane1.setViewportView(jTree1);
 
-                jButton1.setText("jButton1");
+                jToolBar1.setRollover(true);
 
-                jButton2.setText("jButton2");
+                jButton3.setText("Add Gallery");
+                jButton3.setFocusable(false);
+                jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+                jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+                jToolBar1.add(jButton3);
+
+                jButton4.setText("Delete Gallery");
+                jButton4.setFocusable(false);
+                jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+                jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+                jToolBar1.add(jButton4);
+
+                jButton1.setText("Add Picture");
+                jButton1.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jButton1ActionPerformed(evt);
+                        }
+                });
+                jToolBar1.add(jButton1);
+
+                jButton2.setText("Delete Picture");
+                jToolBar1.add(jButton2);
+
+                jSeparator1.setBackground(new java.awt.Color(102, 255, 102));
+                jToolBar1.add(jSeparator1);
+
+                jToolBar2.setRollover(true);
+
+                analyseGal.setText("Analyse Gallery");
+                analyseGal.setFocusable(false);
+                analyseGal.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+                analyseGal.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+                analyseGal.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                analyseGalActionPerformed(evt);
+                        }
+                });
+                jToolBar2.add(analyseGal);
+
+                analysePhoto.setText("Analyse Photo");
+                analysePhoto.setFocusable(false);
+                analysePhoto.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+                analysePhoto.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+                analysePhoto.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                analysePhotoActionPerformed(evt);
+                        }
+                });
+                jToolBar2.add(analysePhoto);
+
+                jButton7.setText("Settings");
+                jButton7.setFocusable(false);
+                jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+                jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+                jToolBar2.add(jButton7);
+
+                jButton8.setText("Export as JSON");
+                jButton8.setFocusable(false);
+                jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+                jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+                jToolBar2.add(jButton8);
 
                 javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
                 this.setLayout(layout);
                 layout.setHorizontalGroup(
                         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
+                                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 445, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGap(9, 9, 9)
-                                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGap(38, 38, 38)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(dataPanelV22, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(plPanelV22, javax.swing.GroupLayout.PREFERRED_SIZE, 562, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(plPanelV22, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(dataPanelV21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap())
                 );
                 layout.setVerticalGroup(
                         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGap(29, 29, 29)
-                                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(plPanelV22, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(4, 4, 4)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(49, 49, 49))
-                                        .addComponent(dataPanelV22, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(plPanelV22, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(dataPanelV21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jScrollPane1))
+                                .addContainerGap())
                 );
 
                 getAccessibleContext().setAccessibleParent(this);
         }// </editor-fold>//GEN-END:initComponents
 
+        private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+                // TODO add your handling code here:d
+        }//GEN-LAST:event_jButton1ActionPerformed
+
+        private void analyseGalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_analyseGalActionPerformed
+		System.out.println("Processing in progress");
+		System.out.println(ProcessingCtrl.listProcessing(UICtrlV2.getCurrent()));
+		
+        }//GEN-LAST:event_analyseGalActionPerformed
+
+        private void analysePhotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_analysePhotoActionPerformed
+		if(UICtrlV2.getSelected() != null) {
+			System.out.println("Processing in progress");
+			System.out.println(ProcessingCtrl.imgProcessing(UICtrlV2.getSelected()));
+		}
+        }//GEN-LAST:event_analysePhotoActionPerformed
+
         // Variables declaration - do not modify//GEN-BEGIN:variables
-        private review.DataPanelV2 dataPanelV22;
+        private javax.swing.JButton analyseGal;
+        private javax.swing.JButton analysePhoto;
+        private review.DataPanelV2 dataPanelV21;
         private javax.swing.JButton jButton1;
         private javax.swing.JButton jButton2;
+        private javax.swing.JButton jButton3;
+        private javax.swing.JButton jButton4;
+        private javax.swing.JButton jButton7;
+        private javax.swing.JButton jButton8;
         private javax.swing.JScrollPane jScrollPane1;
+        private javax.swing.JToolBar.Separator jSeparator1;
+        private javax.swing.JToolBar jToolBar1;
+        private javax.swing.JToolBar jToolBar2;
         private javax.swing.JTree jTree1;
         private review.PlPanelV2 plPanelV22;
         // End of variables declaration//GEN-END:variables
