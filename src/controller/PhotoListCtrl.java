@@ -3,10 +3,13 @@ package controller;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.UUID;
+
+
 import model.ImgModel;
 import model.PhotoList;
+import model.RaceData;
 
 public class PhotoListCtrl extends Controller {
 	
@@ -83,6 +86,48 @@ public class PhotoListCtrl extends Controller {
 		return loadedPhotoLists.get(idPhotoList).addPhoto(f);
 	}
 	
+	/**
+	 * Add and parse a file with data on the race (bibs list, contestant 
+	 * name,...).
+	 * @param idPhotoList - ID of the photolist to add.
+	 * @param file - file to parse.
+	 */
+	public void addRaceData(UUID idPhotoList, File file) {
+		RaceData raceData = new RaceData();
+		raceData.parseDataRaceFile(file);
+		loadedPhotoLists.get(idPhotoList).setRaceData(raceData);
+	}
+	
+	/**
+	 * Process advanced analysis.
+	 * @param idPhotoList - photo list to process.
+	 */
+	public void processAdditionalData(UUID idPhotoList) {
+		PhotoList pl = loadedPhotoLists.get(idPhotoList);
+		if (pl != null) {
+			removeFalsePositiveResult(pl);
+		}
+	}
+	
+	/**
+	 * Remove bibs detected that are not present in the race data.
+	 * @param idPhotoList 
+	 */
+	private void removeFalsePositiveResult(PhotoList pl) {
+		RaceData raceData = pl.getRaceData();
+		Iterator<Integer> i = null;
+		if (raceData != null) {
+			for (ImgModel photo : pl.getPhotolist()) {
+				i = photo.getResult().iterator() ;
+				while(i.hasNext()) {
+					// Detect false positive.
+					if (!raceData.getContestantList().containsKey(i.next())) {
+						i.remove();
+					}
+				}
+			}
+		}
+	}
 	
 	
 }

@@ -73,7 +73,7 @@ public class ProcessingCtrl extends Controller {
 	public static String imgProcessing(ImgModel im)
 	{
 		im.setProcessed(true);
-		im.getResult().addAll(engine.launchDetection(true, im));
+		im.getResult().addAll(engine.launchDetection(im));
 		return im.toJSON();
 
 	}
@@ -91,7 +91,7 @@ public class ProcessingCtrl extends Controller {
 		{
 				to_ret = im;
 				to_ret.setProcessed(true);
-				to_ret.getResult().addAll(engine.launchDetection(true, im));
+				to_ret.getResult().addAll(engine.launchDetection(im));
 		}
 			
 		return pl.toJSON();

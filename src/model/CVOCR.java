@@ -25,171 +25,166 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
-import model.CVOCRSettings.FINDING_MODE;
-import model.CVOCRSettings.OCR_ENGINE;
-import model.CVOCRSettings.OCR_MODE;
 
-
-
+/**
+ * Analyse an image to get the bibs number.
+ * Based on the work of Mathieu THEBAUD <math.thebaud@gmail.com>.
+ */
 public class CVOCR {
-	
-	/**
-	 * Random object to generate random color
-	 */
-	private static Random random = new Random();
 
-	/**
-	 * Face detector
-	 */
-	private CascadeClassifier faceDetector;
-
-	/**
-	 * To know if a detection is currently running
-	 */
-	private boolean detectionRunning;
-
-	/**
-	 * Whole image but on a simple channel
-	 */
-	private Mat imageGrayMat;
-
-	/**
-	 * Whole image
-	 */
+	/** Whole image */
 	private Mat imageMat;
-
-	/**
-	 * Colors
-	 */
-	private Scalar colorFace = new Scalar(255, 0, 0);
-	private Scalar colorBody = new Scalar(0, 255, 0);
-	private Scalar colorText = new Scalar(255, 255,0);
-	private Scalar colorNoNumber = new Scalar(0,0,255);
-
-	/**
-	 * White color as double value
-	 */
+	
+	/** Original image */
+	private Mat imageOriginalMat;
+	
+	/** Whole image but on a simple channel */
+	private Mat imageGrayMat;
+	
+	/** Lumi of the current analysed mat object. */
+	private int currentMatLumi;
+	
+	/** Face detector */
+	private CascadeClassifier faceDetector;
+	
+	/** White color as double value. */
 	private static final double[] WHITE_COLOR = { 255.0 };
 
-	/**
-	 * Black color as double value
-	 */
+	/** Black color as double value. */
 	private static final double[] BLACK_COLOR = { 0.0 };
+	
+	/** Face as a Rect object currently analysed. */
+	private Rect currentFaceRect;
+		
+	/** Location of the face detection xml */
+	private static String FACE_DETECTION_CLASSIFIER_PATH = "res/tessdata/haarcascade_frontalface_alt2.xml";
 
-
-	// OPENCV Parameters ======================================================
-
-	/**
-	 * Parameter : canny threshold
-	 */
-	private int paramCannyThresHold = 170;
-
-	/**
-	 * Minimum of vertices that a contour shape must have to be accept as a 
-	 * potential letter
-	 */
-	// 12-5 before
-	private int paramMinVertices = 3;
-
-	/**
-	 * The number of pixel to add on each possible letter side
-	 */
-	private int paramLetterBoundAdd = 1;
-
-	/**
-	 * Minimum area of a letter
-	 */
-	private int paramMinLetterArea = 120;
-
-	/**private OCR_MODE currentOCRMODE = OCR_MODE.EACH_NUMBE
-	 * The threshold of a color to be considered as white
-	 */
-	//130-110 before
-	private int paramWhiteThreshold = 100;
-
-	/**
-	 * The percentage of white color found to consider a part as a race bib (if than )
-	 */
-	//25-20 before
-	private int paramMinWhiteColorPercentageBib = 20;
-
-	/**
-	 * The percentage of white color found to consider that it can't be a race bib
-	 */
-	private int paramMaxWhiteColorPercentageBib = 75;
-
-	/**
-	 * Param to find rect groups
-	 */
-	private int paramVerticalTolerance = 12;
-	private int paramHorizontalTolerance = 23;
-
-	/**
-	 * Maximum area of a letter
-	 */
-	private int paramMaxLetterArea = 150000;
-
-	/**
-	 * Space between two digit when put together
-	 */
-	private int paramSpaceBetweenDigits = 4;
-
-	/**
-	 * The maximum length of a detected number
-	 */
-	private int paramNumberMaxLength = 10;
-	// ========================================================================
-
+	/** Mode to find number on a image. */
 	private FINDING_MODE currentFindingMode = FINDING_MODE.DETECT_FACE;
 
+	/** OCR to use to recognize the numbers */
 	private OCR_ENGINE currentOCREngine = OCR_ENGINE.TESSERACT;
 
-	/**
-	 * Mode to recognize the numbers on a image
-	 */
+	/** Mode to recognize the numbers on a image. */
 	private OCR_MODE currentModeOcr = OCR_MODE.EACH_NUMBER;
+	
+	/**  Enumeration of available number searching strategy.*/
+	private enum FINDING_MODE {
+		ALL_IMAGE,
+		DETECT_FACE;
+	}
+	
+	/** Enumeration of available OCR mode. */
+	private enum OCR_MODE {
+		EACH_NUMBER,
+		TOTAL_NUMBER;
+	}
+	
+	/** Enumeration of available OCR engine. */
+	private enum OCR_ENGINE {
+		TESSERACT;
+	}
+	
+	// Parameters for debug. ==================================================
+	
+	/** Debug directory path. */
+	private static String DEBUG_DIRECTORY = "debug" + File.separator;
 
-	/**
-	 * OCR Custom engine
-	 */
-	//gprivate NumberOCR customEngine;
-
-	/**
-	 * Debug image count (use to save different image)
-	 */
+	/** Enable debug. */
+	private Boolean isDebugEnabled;
+	
+	/** Debug image count (use to save different image). */
 	private int debugImageCount;
 	
-	/**
-	 * Enable debug
-	 */
-	private Boolean debugEnabled;
+	/** Color of rectangle to draw around the face for debug. */
+	private Scalar colorFace = new Scalar(255, 0, 0);
+	/** Color of rectangle to draw around the body for debug. */
+	private Scalar colorBody = new Scalar(0, 255, 0);
+	/** Color of the text to write on the Mat object for debug. */
+	private Scalar colorText = new Scalar(255, 255,0);
+	/** Color of the number to write on the Mat object for debug. */
+	private Scalar colorNoNumber = new Scalar(0,0,255);
 	
+	/** Random object to generate random color. */
+	private static Random random = new Random();
 	
+	// Parameters to adjust detection. ========================================
+
+	/** Parameter : canny threshold */
+	private int paramCannyThresHold = 170;
+
+	 /** Minimum of vertices that a contour shape must have to be accept as a 
+	 * potential letter. */
+	private int paramMinVertices = 5;
+
+	/** The number of pixel to add on each possible letter side. */
+	private int paramLetterBoundAdd = 1;
+
+	/** The threshold of a color to be considered as white. */
+	private int paramWhiteThreshold = 100;
+
+	/** The percentage of white color found to consider a part as a race bib. */
+	private int paramMinWhiteColorPercentageBib = 20;
+
+	/** The percentage of white color found to consider that it can't be a race bib. */
+	private int paramMaxWhiteColorPercentageBib = 75;
+
+	/** Vertical tolerance to find a rect groups. */
+	private int paramVerticalTolerance = 12;
+	
+	/** Horizontal tolerance to find a rect groups. */
+	private int paramHorizontalTolerance = 23;
+
+	/** Minimum area of a letter. */
+	private int paramMinLetterArea = 120;
+	
+	/** Maximum area of a letter. */
+	private int paramMaxLetterArea = 150000;
+	
+	/** Space between two digit when put together. */
+	private int paramSpaceBetweenDigits = 4;
+
+	/** The maximum length of a detected number. */
+	private int paramNumberMaxLength = 10;
 
 	// CONSTRUCTORS ===========================================================
 
+	/**
+	 * Constructor of the class.
+	 */
 	public CVOCR() {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		//Face detector
-		this.faceDetector = new CascadeClassifier(CVOCRSettings.FACE_DETECTION_PATH);
+		this.faceDetector = new CascadeClassifier(FACE_DETECTION_CLASSIFIER_PATH);
 	}
 
-	// ========================================================================
+	// METHODS. ==============================================================
 	
-	// Getters ================================================================
-	
-	public ArrayList<Integer> launchDetection(Boolean enableDebug, ImgModel im) {
+	/**
+	 * Launch the analyse of an image.
+	 * @param im - ImgModel object to analyse.
+	 * @return an arraylist of found numbers.
+	 */
+	public ArrayList<Integer> launchDetection(ImgModel im) {
 		long startTime = 0 ;
 		if (Settings.getBENCH()) {
 			startTime = System.nanoTime();
 		}
- 		
-		this.debugEnabled = enableDebug;
+		
+		this.isDebugEnabled = Settings.getDEBUG();
 		String path = im.getPath();
 		this.imageMat = Imgcodecs.imread(path);
+		this.imageOriginalMat = this.imageMat;
 		this.imageGrayMat = this.imageMat.clone();
 		Imgproc.cvtColor(this.imageGrayMat, this.imageGrayMat, Imgproc.COLOR_BGR2GRAY);
 		
+		if (Settings.getBENCH()) {
+			long endTime = System.nanoTime();
+			long processTime = endTime - startTime;
+			BenchData bData = new BenchData();
+			bData.setProcTime((int) processTime);
+			//im.setBenchData(bData);
+		}
 
 		ArrayList<Integer> results = getImageNumbers();
 		return results;
@@ -209,15 +204,6 @@ public class CVOCR {
 			this.currentModeOcr = OCR_MODE.TOTAL_NUMBER;
 			break;
 		}
-
-		//Current detection will chose to find in all image if it set a detection zone
-		// TODO
-		/*if (this.currentDetection != null) {
-			if (this.currentDetection.isResized()) {
-				this.currentModeFind = NumberFinder.MODE_FIND_ALL_IMAGE;
-			}
-		}*/
-
 		//Now get with the chosen mode to find
 		switch (this.currentFindingMode) {
 		case ALL_IMAGE:
@@ -228,22 +214,14 @@ public class CVOCR {
 			break;
 		}
 		// Save image if debug
-		if (this.debugEnabled) {
+		if (this.isDebugEnabled) {
 			Imgproc.putText(this.imageMat, numbers.toString(), new Point(20, 20), Core.FONT_HERSHEY_PLAIN, 1.5, this.colorText);
-			this.saveMat(this.imageMat, CVOCRSettings.DEBUG_DIRECTORY + File.pathSeparator + "lastDetectDebug.png");
+			this.saveMat(this.imageMat, DEBUG_DIRECTORY + File.pathSeparator + "lastDetectDebug.png");
 		}
 
 		return numbers;
 	}
 
-	/**
-	 * Debug Function. Save image in choosen path.
-	 * @param img image to save.
-	 * @param path ?
-	 */
-	private void saveMat(Mat img, String path) {
-		Imgcodecs.imwrite(path, img);
-	}
 
 	/**
 	 * To get the number in the image with searching digit in the whole image.<br>
@@ -251,14 +229,12 @@ public class CVOCR {
 	 */
 	private ArrayList<Integer> getImageNumbersAllImage() {
 		ArrayList<Integer> foundNumbers = new ArrayList<Integer>();
-		detectionRunning = true;
 		ArrayList<Integer> nbs = this.getMatNumbers(this.imageGrayMat, null);
 		for (int nb : nbs) {
 			if (!foundNumbers.contains(nb)) {
 				foundNumbers.add(nb);
 			}
 		}
-		detectionRunning = false;
 		return foundNumbers;
 	}
 
@@ -269,53 +245,58 @@ public class CVOCR {
 	private ArrayList<Integer> getImageNumbersFaceDetection() {
 		// Begin
 		ArrayList<Integer> foundNumbers = new ArrayList<Integer>();
-		this.detectionRunning = true;
 		// Search for race bib zone
-		ArrayList<Rect> numberZones = this.getPossibleNumberZone();
-		for (Rect numberZone : numberZones) {
+		// Search face
+		Rect[] facesAreaList = this.getFaces();
+		for (Rect face : facesAreaList) {
+			this.currentFaceRect = face;
+			System.out.println(face.height);
+			System.out.println(face.width);
+			Rect bodyArea = this.getBodyArea(face);
+			Mat bodyMat = getMatPart(imageOriginalMat, bodyArea);
+			System.out.println("lu :" + this.getMatLuminance(bodyMat));
+			// Draw to debug
+			if (this.isDebugEnabled) {
+				Imgproc.rectangle(this.imageMat, new Point(face.x, face.y), new Point(face.x + face.width, face.y + face.height), this.colorFace);
+				Imgproc.rectangle(this.imageMat, bodyArea.tl(), bodyArea.br(), this.colorBody);
+			}
 			// Take the zone and search for possible letters
-			Mat numberZoneMat = CVOCR.getMatPart(this.imageGrayMat, numberZone);
+			Mat numberZoneMat = CVOCR.getMatPart(imageGrayMat, bodyArea);
+			this.currentMatLumi = this.getMatLuminance(bodyMat);
+			this.setDynamicsParams();
 			// Check for already present numbers
-			ArrayList<Integer> nbs = this.getMatNumbers(numberZoneMat, numberZone);
+			ArrayList<Integer> nbs = this.getMatNumbers(numberZoneMat, bodyArea);
 			for (int nb : nbs) {
 				if (!foundNumbers.contains(nb)) {
 					foundNumbers.add(nb);
 				}
 			}
 		}
-		this.detectionRunning = false;
 		return foundNumbers;
 	}
 
 	/**
-	 * This will detect face and determine zone in the image that could have numbers
-	 * @return the list contains all zone that can contains race bib numbers
+	 * Detect face in the image.
+	 * @return an arraylist of all the face.
 	 */
-	private ArrayList<Rect> getPossibleNumberZone() {
-		ArrayList<Rect> numberZones = new ArrayList<Rect>();
-
-		// Detect faces in the image.
+	private Rect[] getFaces() {
 		MatOfRect faceDetections = new MatOfRect();
 		faceDetector.detectMultiScale(this.imageMat, faceDetections);
-
-		// For each face, compute the race bib zone
-		for (Rect face : faceDetections.toArray()) {
-			// Estimate the position
-			Rect estimatePosition = new Rect();
-			estimatePosition.y = face.y + face.height + face.height / 2;
-			estimatePosition.width = face.width * 2;
-			estimatePosition.x = face.x - face.width / 2;
-			estimatePosition.height = face.height * 3;
-			// Add to list
-			numberZones.add(estimatePosition);
-
-			// Draw to debug
-			if (this.debugEnabled) {
-				Imgproc.rectangle(this.imageMat, new Point(face.x, face.y), new Point(face.x + face.width, face.y + face.height), this.colorFace);
-				Imgproc.rectangle(this.imageMat, estimatePosition.tl(), estimatePosition.br(), this.colorBody);
-			}
-		}
-		return numberZones;
+		return faceDetections.toArray();
+	}
+	
+	/**
+	 * Determine a possible area of the body according to face position.
+	 * @param face - a Rect object representing a face
+	 * @return a rect object representing the top of the body. 
+	 */
+	private Rect getBodyArea(Rect face) {
+		Rect estimatePosition = new Rect();
+		estimatePosition.y = face.y + face.height + face.height / 2;
+		estimatePosition.width = face.width * 2;
+		estimatePosition.x = face.x - face.width / 2;
+		estimatePosition.height = face.height * 3;
+		return estimatePosition;
 	}
 
 	/**
@@ -376,6 +357,9 @@ public class CVOCR {
 			ArrayList<Rect> letterZones = this.getPossibleLetterBounds(src);
 			// Regroup in text zImgcodecs.imwriteone
 			ArrayList<TextGroup> textZones = this.getPossibleTextZones(letterZones);
+			if (textZones.size() > 1) {
+				//textZones = this.selectMostLikelyBibsTextGroup(textZones, sourceBitmapArea);
+			}
 			// For each text zone, cut and try OCR
 			for (TextGroup group : textZones) {
 				int number = this.getGroupNumber(group, src);
@@ -385,7 +369,7 @@ public class CVOCR {
 					}
 				}
 				// Debug draw
-				if (this.debugEnabled) {
+				if (this.isDebugEnabled) {
 					Scalar color = CVOCR.getRandomColor();
 					// If it's not the original bitmap
 					if (sourceBitmapArea != null) {
@@ -418,6 +402,36 @@ public class CVOCR {
 	}
 
 	/**
+	 * Try to remove textgroup that are to close to the borders of the body rectangle.
+	 * @param textZones - arraylist of the textzones found.
+	 * @param sourceRect - the rectangle of the body.
+	 * @return an arraylist of a cleaned textones.
+	 */
+	private ArrayList<TextGroup> selectMostLikelyBibsTextGroup(ArrayList<TextGroup> textZones, Rect sourceRect) {
+		TextGroup bibsTextGroup = new TextGroup();
+		bibsTextGroup = textZones.get(0);
+		
+		ArrayList<TextGroup> textZonesClean = new ArrayList<CVOCR.TextGroup>();
+		
+		Rect tempRect = new Rect(sourceRect.x + 10, sourceRect.y + 10, sourceRect.width - 10, sourceRect.height - 10);
+		
+		//Mat test = this.getMatPart(this.imageOriginalMat, tempRect);
+		//this.saveMat(test, debugImageCount+"temprect.png");
+		
+		for (TextGroup group : textZones) {
+			Rect rect = group.getGroupBounds();
+			if (tempRect.contains(new Point(rect.x, rect.y)) 
+					&& tempRect.contains(new Point(rect.x + rect.width, rect.y))
+					&& tempRect.contains(new Point(rect.x - rect.height, rect.y))
+					&& tempRect.contains(new Point(rect.x + rect.width, rect.y - rect.height))
+					) {
+				textZonesClean.add(group);
+			}	
+		}
+		return textZonesClean;	
+	}
+
+	/**
 	 * To get a random color
 	 * @return a random color
 	 */
@@ -442,9 +456,9 @@ public class CVOCR {
 			Rect groupBounds = group.getGroupBounds();
 			Mat groupMat = getMatPart(src, groupBounds);
 			if (groupMat != null) {
-				number = this.getNumber(groupMat);
-				if (debugEnabled && number != -1) {
-					this.saveMat(groupMat, CVOCRSettings.DEBUG_DIRECTORY + File.pathSeparator + this.debugImageCount + "-r" + number + ".png");
+					number = this.getNumber(groupMat);
+				if (isDebugEnabled && number != -1) {
+					this.saveMat(groupMat, DEBUG_DIRECTORY + File.separator + this.debugImageCount + "-r" + number + ".png");
 					this.debugImageCount++;
 				}
 			}
@@ -460,8 +474,8 @@ public class CVOCR {
 					if (nb != -1 )//&& nb < 10)
 						groupText += nb;
 					// Save if debug
-					if (debugEnabled && nb != -1) {
-						this.saveMat(part, CVOCRSettings.DEBUG_DIRECTORY + File.pathSeparator + this.debugImageCount+ ".png");
+					if (isDebugEnabled && nb != -1) {
+						this.saveMat(part, DEBUG_DIRECTORY + File.pathSeparator + this.debugImageCount+ ".png");
 						this.debugImageCount++;
 					}
 				}
@@ -494,20 +508,22 @@ public class CVOCR {
 			try {
 				img = ImageIO.read(in);
 			} catch (IOException e) {
-				System.err.println("IOExecption: " + e.getMessage());
+				System.err.println("IOExcection: " + e.getMessage());
 			}
 
 			Tesseract tesseractInstance = new Tesseract();
 			tesseractInstance.setTessVariable("tessedit_char_whitelist", "0123456789");
-
+			
 			try {
 				String recognized = tesseractInstance.doOCR(img);
 				recognized = this.cleanText(recognized);
-				number = Integer.parseInt(recognized);
+				if (!recognized.isEmpty()) {
+					number = Integer.parseInt(recognized);
+				}
 			} catch (TesseractException e) {
 				System.err.println("TesseractException: " + e.getMessage());			
 			} catch (Exception e) {
-				System.err.println("Execption: " + e.getMessage());
+				System.err.println("Exception: " + e.getMessage());
 			}
 			break;
 		}
@@ -538,10 +554,12 @@ public class CVOCR {
 	 */
 	private ArrayList<Rect> getPossibleLetterBounds(Mat part) {
 		ArrayList<Rect> letterZones = new ArrayList<Rect>(150);
+		//this.saveMat(part, debugImageCount+"beforecanny.png");
 		// Clone to avoid modify
 		Mat workingMat = part.clone();
 		// Change color
 		Imgproc.Canny(workingMat, workingMat, this.paramCannyThresHold, this.paramCannyThresHold);
+		//this.saveMat(workingMat, debugImageCount+"canny.png");
 		// Find the contour
 		ArrayList<MatOfPoint> contours = new ArrayList<MatOfPoint>(1500);
 		Imgproc.findContours(workingMat.clone(), contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
@@ -549,7 +567,11 @@ public class CVOCR {
 		for (MatOfPoint contour : contours) {
 			Rect contourRect = Imgproc.boundingRect(contour);
 			int size = (int) Imgproc.contourArea(contour);
-			if (size >= this.paramMinVertices && contourRect.area() > this.paramMinLetterArea && contourRect.area() < this.paramMaxLetterArea && contourRect.height > contourRect.width && contourRect.height < contourRect.width * 4.5 && this.isValidPart(part, contourRect)) {
+			if (size >= this.paramMinVertices && contourRect.area() > this.paramMinLetterArea 
+					&& contourRect.area() < this.paramMaxLetterArea 
+					&& contourRect.height > contourRect.width 
+					&& contourRect.height < contourRect.width * 4.5 
+					&& this.isValidPart(part, contourRect)) {
 				// Modifiy bounds and add
 				contourRect.x -= this.paramLetterBoundAdd;
 				contourRect.y -= this.paramLetterBoundAdd;
@@ -560,7 +582,7 @@ public class CVOCR {
 		}
 		return letterZones;
 	}
-
+	
 	/**
 	 * To know if a part is considered as a potential black digit on white race bib.<br>
 	 * This will also clean the mat part, as it, the pixel will be access just once.
@@ -593,8 +615,107 @@ public class CVOCR {
 		valid = perc > this.paramMinWhiteColorPercentageBib && perc < this.paramMaxWhiteColorPercentageBib;
 		return valid;
 	}
+	
+	/**
+	 * Set parameters for detection according to face height
+	 * and luminance.
+	 */
+	private void setDynamicsParams() {
+		
+		// Set the settings choose by the user.
+		if (Settings.getEnableUserSettings()) {
+			if (Settings.getOCVParamWitheThreshold() != -1) {
+				paramWhiteThreshold = Settings.getOCVParamWitheThreshold();
+			}
+			if (Settings.getOCVFaceSize() != -1) {
+				this.paramHorizontalTolerance = Settings.getOCVFaceSize();
+				this.paramVerticalTolerance = Settings.getOCVFaceSize();
+			}
+			if (Settings.getOCVMinLetterSize() != -1) {
+				this.paramMinLetterArea = Settings.getOCVMinLetterSize();
+			}
+		} else {
+			// Try to determine params automatically.
 
+			if (currentMatLumi >= 30 && currentMatLumi < 40) {
+				this.paramWhiteThreshold = 90;
+			}	else if (currentMatLumi >= 40 && currentMatLumi < 50) {
+				this.paramWhiteThreshold = 100;
+			} else if (currentMatLumi >= 40 && currentMatLumi < 60) {
+				this.paramWhiteThreshold = 160;
+			} else if (currentMatLumi >= 60 && currentMatLumi < 70) {
+				this.paramWhiteThreshold = 170;
+			} else if (currentMatLumi >= 70 ) {
+				this.paramWhiteThreshold = 200;
+			}
 
+			this.paramWhiteThreshold = 160;
+
+			if (currentFaceRect != null) {
+				int currentFaceHeight = this.currentFaceRect.height;
+				if (currentFaceHeight >= 100 && currentFaceHeight < 200) {
+					this.paramHorizontalTolerance = 50;
+					this.paramVerticalTolerance = 50;
+				} else if (currentFaceHeight >= 200 && currentFaceHeight < 300) {
+					this.paramVerticalTolerance = 60;
+					this.paramHorizontalTolerance = 60;
+					this.paramMinLetterArea = 1000;
+				} else if (currentFaceHeight >= 300 && currentFaceHeight < 500) {
+					this.paramVerticalTolerance = 65;
+					this.paramHorizontalTolerance = 65;
+					this.paramMinLetterArea = 1000;
+				} else if (currentFaceHeight >= 500 && currentFaceHeight < 550) {
+					//this.paramHorizontalTolerance = 70;
+					//this.paramVerticalTolerance = 70;
+					//this.paramMinLetterArea = 25000;
+				} else if (currentFaceHeight >= 550 && currentFaceHeight < 600) {
+					this.paramHorizontalTolerance = 100;
+					this.paramVerticalTolerance = 120;
+					//this.paramMinLetterArea = 25000;
+					this.paramMinLetterArea = 10000;
+				} else if (currentFaceHeight >= 600 && currentFaceHeight < 650) {
+					this.paramHorizontalTolerance = 150;
+					this.paramVerticalTolerance = 250;
+					this.paramMinLetterArea = 10000;
+				} else if (currentFaceHeight >= 650) {
+					this.paramHorizontalTolerance = 200;
+					this.paramVerticalTolerance = 250;
+					this.paramMinLetterArea = 10000;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Calculate the average luminance of a RGB mat object.
+	 * @param mat to caculate
+	 * @return the luminance in int.
+	 */
+	private int getMatLuminance(Mat mat) {
+		Mat matHSL = new Mat(); 
+		Imgproc.cvtColor(mat, matHSL, Imgproc.COLOR_RGB2HLS);
+		
+		int size = (int) (mat.total() * mat.channels());
+		double[] tempPix = new double[size];
+		double lumi = 0;
+		
+		for (int i = 0 ; i < mat.rows() ; i++) {
+			for (int j = 0 ; j < mat.cols() ; j++) {
+				tempPix = matHSL.get(i, j);
+				lumi = lumi + tempPix[1];
+			}
+		}
+		return (int) Math.round(lumi / size);
+	}
+	
+	/**
+	 * Debug Function. Save image in choosen path.
+	 * @param img image to save.
+	 * @param path to write the file.
+	 */
+	private void saveMat(Mat img, String path) {
+		Imgcodecs.imwrite(path, img);
+	}
 
 	/**
 	 * To get the rectangle groups that could contains a full text.<br>
@@ -671,7 +792,8 @@ public class CVOCR {
 		return new Point(rectTL.x + point.x, rectTL.y + point.y);
 	}
 
-	// TextGroup internClass
+	
+	// TextGroup internClass ==================================================
 
 	/**
 	 * A class that group several rect in a group.<br>
