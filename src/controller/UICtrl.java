@@ -31,7 +31,6 @@ import review.PlPanel;
  * @author nsl
  */
 public class UICtrl {
-	static private ImgModel selected;
 	static public GridBagConstraints gbc = new GridBagConstraints();
 
 	public static JButton getAddGalleryButton() {
@@ -69,20 +68,6 @@ public class UICtrl {
 		return UICtrl.pll;
 		
 	}
-	public static ImgModel getSelected() {
-		return selected;
-	}
-	
-	public static void setSelected(UUID selected) {
-		if(selected == null)
-			UICtrl.selected = null;
-		else
-			for(ImgModel im : ProcessingCtrl.loadedPhotoLists.get(
-				ProcessingCtrl.getPlidFromImgid(selected)).getPhotolist())
-				if(im.getId().equals(selected))
-					UICtrl.selected = im;
-	}
-	
 	public static DataPanel getDp() {
 		return dp;
 	}

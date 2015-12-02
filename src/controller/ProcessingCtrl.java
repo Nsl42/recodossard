@@ -52,9 +52,9 @@ public class ProcessingCtrl extends Controller {
 	 * @param id PhotoList or ImageModel Id
 	 * @return String JSON representation of the given object
 	 */
-	public String processing(UUID id)
+	public static String processing(UUID id)
 	{
-		UUID gallery = this.getPlidFromImgid(id);
+		UUID gallery = getPlidFromImgid(id);
 		if(gallery != null)
 			return imgProcessing(loadedPhotoLists.get
 		(gallery).getPhoto(id));
@@ -70,7 +70,7 @@ public class ProcessingCtrl extends Controller {
 	 * @param im the ImgModel object you want to run detection on
 	 * @return ret String JSON format, the Image with the detection done
 	 */
-	public String imgProcessing(ImgModel im)
+	public static String imgProcessing(ImgModel im)
 	{
 		im.setProcessed(true);
 		im.getResult().addAll(engine.launchDetection(true, im));

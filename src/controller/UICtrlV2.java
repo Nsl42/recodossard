@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import model.ImgModel;
 import model.PhotoList;
+import review.DataPanelV2;
 import review.GUIV2;
 
 /**
@@ -25,9 +26,25 @@ import review.GUIV2;
  */
 public class UICtrlV2 extends Controller{
 	public static GUIV2 gui;
+	static private ImgModel selected;
 	public static HashMap<UUID, ArrayList<JLabel>> labels = new HashMap<>();
 
 	static private PhotoList current;
+
+	public static ImgModel getSelected() {
+		return selected;
+	}
+	
+	public static void setSelected(UUID selected) {
+		if(selected == null)
+			UICtrlV2.selected = null;
+		else
+			for(ImgModel im : ProcessingCtrl.loadedPhotoLists.get(
+				ProcessingCtrl.getPlidFromImgid(selected)).getPhotolist())
+				if(im.getId().equals(selected))
+					UICtrlV2.selected = im;
+	}
+	
 	public static void closeNoPl()
 	{
 		if(!UICtrlV2.loadedPhotoLists.isEmpty())
@@ -47,12 +64,21 @@ public class UICtrlV2 extends Controller{
 		UICtrlV2.current = ProcessingCtrl.loadedPhotoLists.get(toCurrent);
 		System.out.println("curr " + current.toString());
 		UICtrlV2.gui.getMp().getPlp().refresh(toCurrent);
+		UICtrlV2.refreshDataDP();
 		UICtrlV2.gui.repaint();
 	}
 	
 	static public PhotoList getCurrent() {
 		return current;
 	}
+	
+	static public DataPanelV2 refreshImgDP(){
+		return UICtrlV2.gui.getMp().getDp().refreshImg();
+	}
+	static public DataPanelV2 refreshDataDP(){
+		return UICtrlV2.gui.getMp().getDp().refreshData();
+	}
+	
 	static public void buildLabels(PhotoList pl) {
 		ArrayList<JLabel> ret = new ArrayList<>();
 		for(final ImgModel im : pl.getPhotolist()) {
@@ -65,9 +91,14 @@ public class UICtrlV2 extends Controller{
 			labPic.setVisible(true);
 			labPic.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent me) {
-					if(im.equals(UICtrl.getSelected())) {
+					if(im.equals(UICtrlV2.getSelected())) {
+						UICtrlV2.setSelected(null);
+						UICtrlV2.refreshImgDP();
 					}
 					else {
+						UICtrlV2.setSelected(im.getId());
+						UICtrlV2.refreshImgDP();
+
 					}
 				}
 			});
