@@ -622,52 +622,66 @@ public class CVOCR {
 	 */
 	private void setDynamicsParams() {
 		
-		//this.paramCannyThresHold = 255;
-		
-		if (currentMatLumi >= 30 && currentMatLumi < 40) {
-			this.paramWhiteThreshold = 90;
-		}	else if (currentMatLumi >= 40 && currentMatLumi < 50) {
-			this.paramWhiteThreshold = 100;
-		} else if (currentMatLumi >= 40 && currentMatLumi < 60) {
+		// Set the settings choose by the user.
+		if (Settings.getEnableUserSettings()) {
+			if (Settings.getOCVParamWitheThreshold() != -1) {
+				paramWhiteThreshold = Settings.getOCVParamWitheThreshold();
+			}
+			if (Settings.getOCVFaceSize() != -1) {
+				this.paramHorizontalTolerance = Settings.getOCVFaceSize();
+				this.paramVerticalTolerance = Settings.getOCVFaceSize();
+			}
+			if (Settings.getOCVMinLetterSize() != -1) {
+				this.paramMinLetterArea = Settings.getOCVMinLetterSize();
+			}
+		} else {
+			// Try to determine params automatically.
+
+			if (currentMatLumi >= 30 && currentMatLumi < 40) {
+				this.paramWhiteThreshold = 90;
+			}	else if (currentMatLumi >= 40 && currentMatLumi < 50) {
+				this.paramWhiteThreshold = 100;
+			} else if (currentMatLumi >= 40 && currentMatLumi < 60) {
+				this.paramWhiteThreshold = 160;
+			} else if (currentMatLumi >= 60 && currentMatLumi < 70) {
+				this.paramWhiteThreshold = 170;
+			} else if (currentMatLumi >= 70 ) {
+				this.paramWhiteThreshold = 200;
+			}
+
 			this.paramWhiteThreshold = 160;
-		} else if (currentMatLumi >= 60 && currentMatLumi < 70) {
-			this.paramWhiteThreshold = 170;
-		} else if (currentMatLumi >= 70 ) {
-			this.paramWhiteThreshold = 200;
-		}
-		
-		this.paramWhiteThreshold = 160;
-			
-		if (currentFaceRect != null) {
-			int currentFaceHeight = this.currentFaceRect.height;
-			if (currentFaceHeight >= 100 && currentFaceHeight < 200) {
-				this.paramHorizontalTolerance = 50;
-				this.paramVerticalTolerance = 50;
-			} else if (currentFaceHeight >= 200 && currentFaceHeight < 300) {
-				this.paramVerticalTolerance = 60;
-				this.paramHorizontalTolerance = 60;
-				this.paramMinLetterArea = 1000;
-			} else if (currentFaceHeight >= 300 && currentFaceHeight < 500) {
-				this.paramVerticalTolerance = 65;
-				this.paramHorizontalTolerance = 65;
-				this.paramMinLetterArea = 1000;
-			} else if (currentFaceHeight >= 500 && currentFaceHeight < 550) {
-				//this.paramHorizontalTolerance = 70;
-				//this.paramVerticalTolerance = 70;
-				//this.paramMinLetterArea = 25000;
-			} else if (currentFaceHeight >= 550 && currentFaceHeight < 600) {
-				this.paramHorizontalTolerance = 100;
-				this.paramVerticalTolerance = 120;
-				//this.paramMinLetterArea = 25000;
-				this.paramMinLetterArea = 10000;
-			} else if (currentFaceHeight >= 600 && currentFaceHeight < 650) {
-				this.paramHorizontalTolerance = 150;
-				this.paramVerticalTolerance = 250;
-				this.paramMinLetterArea = 10000;
-			} else if (currentFaceHeight >= 650) {
-				this.paramHorizontalTolerance = 200;
-				this.paramVerticalTolerance = 250;
-				this.paramMinLetterArea = 10000;
+
+			if (currentFaceRect != null) {
+				int currentFaceHeight = this.currentFaceRect.height;
+				if (currentFaceHeight >= 100 && currentFaceHeight < 200) {
+					this.paramHorizontalTolerance = 50;
+					this.paramVerticalTolerance = 50;
+				} else if (currentFaceHeight >= 200 && currentFaceHeight < 300) {
+					this.paramVerticalTolerance = 60;
+					this.paramHorizontalTolerance = 60;
+					this.paramMinLetterArea = 1000;
+				} else if (currentFaceHeight >= 300 && currentFaceHeight < 500) {
+					this.paramVerticalTolerance = 65;
+					this.paramHorizontalTolerance = 65;
+					this.paramMinLetterArea = 1000;
+				} else if (currentFaceHeight >= 500 && currentFaceHeight < 550) {
+					//this.paramHorizontalTolerance = 70;
+					//this.paramVerticalTolerance = 70;
+					//this.paramMinLetterArea = 25000;
+				} else if (currentFaceHeight >= 550 && currentFaceHeight < 600) {
+					this.paramHorizontalTolerance = 100;
+					this.paramVerticalTolerance = 120;
+					//this.paramMinLetterArea = 25000;
+					this.paramMinLetterArea = 10000;
+				} else if (currentFaceHeight >= 600 && currentFaceHeight < 650) {
+					this.paramHorizontalTolerance = 150;
+					this.paramVerticalTolerance = 250;
+					this.paramMinLetterArea = 10000;
+				} else if (currentFaceHeight >= 650) {
+					this.paramHorizontalTolerance = 200;
+					this.paramVerticalTolerance = 250;
+					this.paramMinLetterArea = 10000;
+				}
 			}
 		}
 	}
