@@ -6,7 +6,6 @@
 package review;
 
 import controller.ProcessingCtrl;
-import controller.UICtrl;
 import controller.UICtrlV2;
 import java.util.UUID;
 import javax.swing.JFileChooser;
@@ -70,24 +69,8 @@ public class NoPlPanelV2 extends javax.swing.JPanel {
         }// </editor-fold>//GEN-END:initComponents
 
         private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-		JFileChooser jfc = new JFileChooser();
-		jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		jfc.setMultiSelectionEnabled(false);
-		if(jfc.showOpenDialog(this.jButton1) == JFileChooser.APPROVE_OPTION){
-			UUID uid = ProcessingCtrl.
-				acknowledge(jfc.getSelectedFile());
-			UICtrlV2.closeNoPl();
-			UICtrlV2.buildLabels(UICtrlV2.loadedPhotoLists.get(uid));
-			UICtrlV2.setCurrent(uid);
-			UICtrlV2.gui.repaint();
-			System.out.println("HELLO REPAINT");
-			/*
-			UICtrl.labels.put(uid, UICtrl.getlabels(ProcessingCtrl.loadedPhotoLists.get(uid)));
-			UICtrl.setCurrent(uid);
-			UICtrl.pll.add(UICtrl.getCurrent());
-			*/
+		UICtrlV2.addGalleryAction(this.jButton1);
 			
-				}
         }//GEN-LAST:event_jButton1ActionPerformed
 
 

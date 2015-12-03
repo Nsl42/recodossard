@@ -7,7 +7,7 @@ package review;
 
 import controller.Controller;
 import controller.ProcessingCtrl;
-import controller.UICtrl;
+import controller.UICtrlV2;
 import static java.lang.System.out;
 import java.util.UUID;
 import javax.swing.DefaultListModel;
@@ -22,7 +22,7 @@ import model.PhotoList;
  *
  * @author nsl
  */
-public class PlList extends JList{
+public class PlList<String> extends JList{
 	DefaultListModel<PhotoList> lmpl;
 
 	public PlList(){
@@ -34,11 +34,13 @@ public class PlList extends JList{
 			public void valueChanged(ListSelectionEvent lse) {
 				if(!lse.getValueIsAdjusting())
 				{
-					PhotoList pl = (PhotoList) UICtrl.getPll().getSelectedValue();
+					PhotoList pl;
+					System.out.println("SOURCE " +UICtrlV2.gui.getMp().getPll().getSelectedValue());
+					
+					pl = (PhotoList)UICtrlV2.gui.getMp().getPll().getSelectedValue();
 					if(!(pl == null)) {
-							UICtrl.getPlp().refresh(pl);
-
-//							UICtrl.setCurrent(pl.getId());
+							UICtrlV2.setCurrent(pl.getId());
+							UICtrlV2.gui.getMp().getPlp().refresh(pl.getId());
 						}
 				}
 				
@@ -54,6 +56,11 @@ public class PlList extends JList{
 	{
          lmpl.addElement(data);
 	 this.setModel(lmpl);
+	}
+	public void removeAll()
+	{
+		lmpl.removeAllElements();
+		this.setModel(lmpl);
 	}
 	public void remove(PhotoList data)
 	{

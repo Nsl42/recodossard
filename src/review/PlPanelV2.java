@@ -55,9 +55,8 @@ public class PlPanelV2 extends javax.swing.JPanel {
 	public void refresh(UUID pl) {
 		//JPanel tmp = new JPanel();
 		int i = 0;
+		this.removeAll();
 		for(JLabel jl : UICtrlV2.labels.get(pl)) {
-			
-
 			// Modifier files par pl surement pour récupérer la photo en elle même (en récupérant le chemin).
 			this.add(jl);
 			jl.setVisible(true);

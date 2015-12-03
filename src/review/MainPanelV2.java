@@ -7,7 +7,9 @@ package review;
 
 import controller.ProcessingCtrl;
 import controller.UICtrlV2;
-import javax.swing.JScrollPane;
+import java.util.UUID;
+import javax.swing.JFileChooser;
+import javax.swing.JTree;
 
 /**
  *
@@ -30,7 +32,6 @@ public class MainPanelV2 extends javax.swing.JPanel {
 	{
 		return this.dataPanelV21;
 	}
-
 	/**
 	 * This method is called from within the constructor to initialize the
 	 * form. WARNING: Do NOT modify this code. The content of this method is
@@ -40,8 +41,6 @@ public class MainPanelV2 extends javax.swing.JPanel {
         // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
         private void initComponents() {
 
-                jScrollPane1 = new javax.swing.JScrollPane();
-                jTree1 = new javax.swing.JTree();
                 plPanelV22 = new review.PlPanelV2();
                 jToolBar1 = new javax.swing.JToolBar();
                 jButton3 = new javax.swing.JButton();
@@ -55,8 +54,8 @@ public class MainPanelV2 extends javax.swing.JPanel {
                 jButton7 = new javax.swing.JButton();
                 jButton8 = new javax.swing.JButton();
                 dataPanelV21 = new review.DataPanelV2();
-
-                jScrollPane1.setViewportView(jTree1);
+                jScrollPane2 = new javax.swing.JScrollPane();
+                plList1 = new review.PlList<>();
 
                 jToolBar1.setRollover(true);
 
@@ -64,6 +63,11 @@ public class MainPanelV2 extends javax.swing.JPanel {
                 jButton3.setFocusable(false);
                 jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
                 jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+                jButton3.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jButton3ActionPerformed(evt);
+                        }
+                });
                 jToolBar1.add(jButton3);
 
                 jButton4.setText("Delete Gallery");
@@ -122,37 +126,43 @@ public class MainPanelV2 extends javax.swing.JPanel {
                 jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
                 jToolBar2.add(jButton8);
 
+                plList1.setModel(new javax.swing.AbstractListModel<String>() {
+                        String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+                        public int getSize() { return strings.length; }
+                        public String getElementAt(int i) { return strings[i]; }
+                });
+                jScrollPane2.setViewportView(plList1);
+
                 javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
                 this.setLayout(layout);
                 layout.setHorizontalGroup(
                         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 445, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 445, Short.MAX_VALUE)
+                                .addGap(6, 6, 6))
                         .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(plPanelV22, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(dataPanelV21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(dataPanelV21, javax.swing.GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE))
                                 .addContainerGap())
                 );
                 layout.setVerticalGroup(
                         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(4, 4, 4)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
                                                 .addComponent(plPanelV22, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(dataPanelV21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(jScrollPane1))
+                                                .addComponent(dataPanelV21, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jScrollPane2))
                                 .addContainerGap())
                 );
 
@@ -176,6 +186,11 @@ public class MainPanelV2 extends javax.swing.JPanel {
 		}
         }//GEN-LAST:event_analysePhotoActionPerformed
 
+        private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+                // TODO add your handling code here:
+		UICtrlV2.addGalleryAction(this.jButton1);
+        }//GEN-LAST:event_jButton3ActionPerformed
+
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JButton analyseGal;
         private javax.swing.JButton analysePhoto;
@@ -186,11 +201,16 @@ public class MainPanelV2 extends javax.swing.JPanel {
         private javax.swing.JButton jButton4;
         private javax.swing.JButton jButton7;
         private javax.swing.JButton jButton8;
-        private javax.swing.JScrollPane jScrollPane1;
+        private javax.swing.JScrollPane jScrollPane2;
         private javax.swing.JToolBar.Separator jSeparator1;
         private javax.swing.JToolBar jToolBar1;
         private javax.swing.JToolBar jToolBar2;
-        private javax.swing.JTree jTree1;
+        private review.PlList<String> plList1;
         private review.PlPanelV2 plPanelV22;
         // End of variables declaration//GEN-END:variables
+
+	public PlList<String> getPll() {
+		return this.plList1;
+	}
+
 }

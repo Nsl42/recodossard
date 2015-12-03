@@ -15,6 +15,7 @@ import model.PhotoList;
  */
 public class DataPanelV2 extends javax.swing.JPanel {
 
+	UICtrlV2 uictrl = new UICtrlV2();
 	private int imgCount = 0;
 	private int analysedCount = 0;
 	private int failCount = 0;
