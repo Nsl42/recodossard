@@ -25,7 +25,6 @@ public class Main{
 	private static boolean debugIsEnabled = false;
 	private static boolean verboseIsEnabled  = false;
 	private static boolean exifIsEnabled  = false;
-	private static boolean benchmarkIsEnabled = false;
 	private static boolean raceDataIsEnabled = false;
 	
 	private static void usage() {
@@ -40,7 +39,6 @@ public class Main{
 		options.addOption("v", "verbose", false, "Display more messages.");
 		options.addOption("f", "file", true, "Image or directory to analyse.");
 		options.addOption("d", "debug", false, "Enable debug mode.");
-		options.addOption("b", "bench", false, "Wether to perform benchmark.");
 		options.addOption("e", "exif", false, "Turns on exif analysis.");
 		options.addOption("rd", "race-data", false, "Turns on race data analysis.");
 		
@@ -66,9 +64,6 @@ public class Main{
 			if (line.hasOption("e")) {
 				exifIsEnabled = true;
 			}
-			if (line.hasOption("b")) {
-				benchmarkIsEnabled = true;
-			}
 			if (line.hasOption("rd")) {
 				raceDataIsEnabled = true;
 				fileToAnalyse = new File(line.getOptionValue("rd"));
@@ -88,7 +83,7 @@ public class Main{
 			System.exit(1);
 		}
 		
-		processingController.setProcessSettings(exifIsEnabled, raceDataIsEnabled, benchmarkIsEnabled, debugIsEnabled);
+		processingController.setProcessSettings(exifIsEnabled, raceDataIsEnabled, debugIsEnabled);
 		UUID plID = processingController.acknowledge(file);
 		processingController.processing(plID);
 		if (raceDataIsEnabled) {

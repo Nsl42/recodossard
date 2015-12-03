@@ -166,10 +166,6 @@ public class CVOCR {
 	 * @return an arraylist of found numbers.
 	 */
 	public ArrayList<Integer> launchDetection(ImgModel im) {
-		long startTime = 0 ;
-		if (Settings.getBENCH()) {
-			startTime = System.nanoTime();
-		}
 		
 		this.isDebugEnabled = Settings.getDEBUG();
 		String path = im.getPath();
@@ -178,13 +174,6 @@ public class CVOCR {
 		this.imageGrayMat = this.imageMat.clone();
 		Imgproc.cvtColor(this.imageGrayMat, this.imageGrayMat, Imgproc.COLOR_BGR2GRAY);
 		
-		if (Settings.getBENCH()) {
-			long endTime = System.nanoTime();
-			long processTime = endTime - startTime;
-			BenchData bData = new BenchData();
-			bData.setProcTime((int) processTime);
-			//im.setBenchData(bData);
-		}
 
 		ArrayList<Integer> results = getImageNumbers();
 		return results;

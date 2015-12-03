@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package review;
+package GUI;
 
 import controller.UICtrlV2;
 import java.awt.GridLayout;
@@ -20,7 +20,16 @@ public class PlPanelV2 extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane  jScrollPane1 = new JScrollPane(this);
+    public JScrollPane getSp()
+    {
+	    JScrollPane sp = new JScrollPane(this);
+	    sp.setVisible(true);
+	    sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	    sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+	    sp.setBackground(new java.awt.Color(102, 255, 153));
+	    sp.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+	    return sp;
+    }
     // End of variables declaration//GEN-END:variables
 	
 	/**
@@ -28,7 +37,7 @@ public class PlPanelV2 extends javax.swing.JPanel {
 	 */
 	public PlPanelV2() {
 		initComponents();
-		this.jScrollPane1.setVisible(true);
+		this.setLayout(new GridLayout(0,7));
 	}
 
 	/**
@@ -40,10 +49,6 @@ public class PlPanelV2 extends javax.swing.JPanel {
         // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
         private void initComponents() {
 
-                jScrollPane1.setBackground(new java.awt.Color(102, 255, 153));
-                jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-                jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-                jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
                 GridLayout layout = new GridLayout(0,7);
                 layout.setVgap(10);

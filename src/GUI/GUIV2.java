@@ -3,10 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package review;
+package GUI;
 
 import controller.Controller;
+import controller.ProcessingCtrl;
 import controller.UICtrlV2;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -35,23 +37,55 @@ public class GUIV2 extends javax.swing.JFrame {
         // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
         private void initComponents() {
 
-                mainPanelV21 = new review.MainPanelV2();
-                noPlPanelV21 = new review.NoPlPanelV2();
+                mainPanelV21 = new GUI.MainPanelV2();
+                noPlPanelV21 = new GUI.NoPlPanelV2();
                 jMenuBar1 = new javax.swing.JMenuBar();
                 jMenu1 = new javax.swing.JMenu();
-                jMenu2 = new javax.swing.JMenu();
+                jCheckBoxMenuItem4 = new javax.swing.JCheckBoxMenuItem();
+                jCheckBoxMenuItem2 = new javax.swing.JCheckBoxMenuItem();
+                jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
                 jMenu3 = new javax.swing.JMenu();
+                jMenuItem1 = new javax.swing.JMenuItem();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
                 setTitle("RecoDossards");
 
-                jMenu1.setText("File");
+                jMenu1.setText("Settings");
+
+                jCheckBoxMenuItem4.setSelected(true);
+                jCheckBoxMenuItem4.setText("Use EXIF Data");
+                jCheckBoxMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jCheckBoxMenuItem4ActionPerformed(evt);
+                        }
+                });
+                jMenu1.add(jCheckBoxMenuItem4);
+
+                jCheckBoxMenuItem2.setSelected(true);
+                jCheckBoxMenuItem2.setText("Enable Debug");
+                jMenu1.add(jCheckBoxMenuItem2);
+
+                jCheckBoxMenuItem1.setSelected(true);
+                jCheckBoxMenuItem1.setText("Additionnal Data");
+                jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jCheckBoxMenuItem1ActionPerformed(evt);
+                        }
+                });
+                jMenu1.add(jCheckBoxMenuItem1);
+
                 jMenuBar1.add(jMenu1);
 
-                jMenu2.setText("Edit");
-                jMenuBar1.add(jMenu2);
-
                 jMenu3.setText("About");
+
+                jMenuItem1.setText("About Us");
+                jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jMenuItem1ActionPerformed(evt);
+                        }
+                });
+                jMenu3.add(jMenuItem1);
+
                 jMenuBar1.add(jMenu3);
 
                 setJMenuBar(jMenuBar1);
@@ -79,6 +113,21 @@ public class GUIV2 extends javax.swing.JFrame {
 
                 pack();
         }// </editor-fold>//GEN-END:initComponents
+
+        private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+		JOptionPane.showMessageDialog(null, "RecoDossard v0.9 \n Authors : Alaoui M'Darhri Anas,  Leblond Xavier, Malledant Solène\n ENSIBS INFO 3 2015/2016", "Recodossard v0.9", JOptionPane.INFORMATION_MESSAGE);
+		
+		
+        }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+        private void jCheckBoxMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem4ActionPerformed
+                // TODO add your handling code here:
+			ProcessingCtrl.setProcessSettings(this.jCheckBoxMenuItem4.getState(), this.jCheckBoxMenuItem1.getState(), this.jCheckBoxMenuItem2.getState());
+        }//GEN-LAST:event_jCheckBoxMenuItem4ActionPerformed
+
+        private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
+                // TODO add your handling code here:
+        }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
 
 	/**
 	 * @param args the command line arguments
@@ -110,7 +159,6 @@ public class GUIV2 extends javax.swing.JFrame {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				UICtrlV2.gui = new GUIV2("recodossard");
-				System.out.println(UICtrlV2.loadedPhotoLists.toString());
 					UICtrlV2.gui.noPlPanelV21.setVisible(true);
 					UICtrlV2.gui.mainPanelV21.setVisible(false);
 					UICtrlV2.gui.setVisible(true);
@@ -126,20 +174,20 @@ public class GUIV2 extends javax.swing.JFrame {
 	}
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
+        private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
+        private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem2;
+        private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem4;
         private javax.swing.JMenu jMenu1;
-        private javax.swing.JMenu jMenu2;
         private javax.swing.JMenu jMenu3;
         private javax.swing.JMenuBar jMenuBar1;
-        private review.MainPanelV2 mainPanelV21;
-        private review.NoPlPanelV2 noPlPanelV21;
+        private javax.swing.JMenuItem jMenuItem1;
+        private GUI.MainPanelV2 mainPanelV21;
+        private GUI.NoPlPanelV2 noPlPanelV21;
         // End of variables declaration//GEN-END:variables
 
 	public void switchPanels() {
 		this.getNplp().setVisible(false);
-		System.out.println("NpLp  " + this.getNplp().isVisible());
-		System.out.println("Mp  " + this.getMp().isVisible());
 		this.getMp().setVisible(true);
-		System.out.println("closeNoPl");
 		this.pack();
 		this.getContentPane().repaint();
 	}

@@ -18,7 +18,6 @@ public class Settings {
 		
 	static private boolean EXIF = false;
 	static private boolean ADDITONNAL_DATA = false;
-	static private boolean BENCH = false;
 	static private boolean DEBUG = false;
 	static private Algo ALGO = Algo.DEFAULT;
 
@@ -36,13 +35,7 @@ public class Settings {
 
 	static private void setADDITONNAL_DATA(boolean ADDITONNAL_DATA) { Settings.ADDITONNAL_DATA = ADDITONNAL_DATA; }
 
-	static public boolean getBENCH() {
-		return BENCH;
-	}
 
-	static private void setBENCH(boolean BENCH) {
-		Settings.BENCH = BENCH;
-	}
 
 	static public boolean getDEBUG() {
 		return DEBUG;
@@ -59,11 +52,10 @@ public class Settings {
 	static private void setALGO(Algo ALGO) {
 		Settings.ALGO = ALGO;
 	}
-	static public void setSettings(boolean exif, boolean data, boolean bench, boolean debug, Algo algo)
+	static public void setSettings(boolean exif, boolean data, boolean debug, Algo algo)
 	{
 		Settings.setEXIF(exif);
 		Settings.setADDITONNAL_DATA(data);
-		Settings.setBENCH(bench);
 		Settings.setDEBUG(debug);
 		Settings.setALGO(algo);
 

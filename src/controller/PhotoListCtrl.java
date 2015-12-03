@@ -16,6 +16,7 @@ public class PhotoListCtrl extends Controller {
 	/**
 	 * writelist given a photoListId and the path to a JSON file, writes
 	 * the JSON output of the photolist id at the specified path.
+	 * @author Anas Alaoui M'Darhri
 	 * @param photolistid The photoList ID you want
 	 * @param pathToJSON The path to the file you want
 	 * @throws Exception 
@@ -31,6 +32,7 @@ public class PhotoListCtrl extends Controller {
 	/**
 	 * writeimg given a ImgModel id and the path to a JSON file, writes
 	 * the JSON output of the imgModel at the specified path.
+	 * @author Anas Alaoui M'Darhri
 	 * @param photoid The photo ID you want
 	 * @param pathToJSON The path to the file you want
 	 * @throws Exception 
@@ -59,6 +61,7 @@ public class PhotoListCtrl extends Controller {
 
 	/**
 	 * Deletes the photoList corresponding to the UUID given 
+	 * @author Anas Alaoui M'Darhri
 	 * @param idPhotoList the ID of the photolist you want to remove
 	 */
 	public void delete(UUID idPhotoList) {
@@ -70,6 +73,7 @@ public class PhotoListCtrl extends Controller {
 	
 	/**
 	 * Reads from a JSON file, and adds the items to the acknowledged content
+	 * @author Anas Alaoui M'Darhri
 	 * @param pathToJSON path to a JSON file
 	 */
 	public void loadImagesFromJSON(String pathToJSON) {
@@ -78,6 +82,7 @@ public class PhotoListCtrl extends Controller {
 	
 	/**
 	 * Adds a photo to a PhotoList 
+	 * @author Anas Alaoui M'Darhri
 	 * @param idPhotoList The UUID of a PhotoList you want
 	 * @param f The file object of a image you want to add to the photoList
 	 * @return the object ImgModel corresponding to the UUID you've given
@@ -89,6 +94,7 @@ public class PhotoListCtrl extends Controller {
 	/**
 	 * Add and parse a file with data on the race (bibs list, contestant 
 	 * name,...).
+	 * @author Anas Alaoui M'Darhri
 	 * @param idPhotoList - ID of the photolist to add.
 	 * @param file - file to parse.
 	 */
@@ -100,6 +106,7 @@ public class PhotoListCtrl extends Controller {
 	
 	/**
 	 * Process advanced analysis.
+	 * @author Anas Alaoui M'Darhri
 	 * @param idPhotoList - photo list to process.
 	 */
 	public void processAdditionalData(UUID idPhotoList) {
@@ -111,6 +118,7 @@ public class PhotoListCtrl extends Controller {
 	
 	/**
 	 * Remove bibs detected that are not present in the race data.
+	 * @author Anas Alaoui M'Darhri
 	 * @param idPhotoList 
 	 */
 	private void removeFalsePositiveResult(PhotoList pl) {

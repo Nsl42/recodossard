@@ -15,8 +15,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import model.ImgModel;
 import model.PhotoList;
-import review.DataPanelV2;
-import review.GUIV2;
+import GUI.DataPanelV2;
+import GUI.GUIV2;
 
 /**
  * Manages and refreshes the view
@@ -28,9 +28,6 @@ public class UICtrlV2 extends Controller{
 	public static HashMap<UUID, ArrayList<JLabel>> labels = new HashMap<>();
 	static private ImgModel selected;
 	static private PhotoList current;
-	static private DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Gallery list :");
-	static private DefaultTreeModel treeModel =
-		new DefaultTreeModel(rootNode);
 
 	// Getters and Setters
 
@@ -58,15 +55,18 @@ public class UICtrlV2 extends Controller{
 	
 	/**
 	 * @author Anas Alaoui M'Darhri
-	 * @param toCurrent the new PhotoList you want to display on the 
+	 * @param toCurrent the new PhotoList you want to display on the
 	 * main panel
 	 */
 	static public void setCurrent(UUID toCurrent) {
 		UICtrlV2.current = ProcessingCtrl.loadedPhotoLists.get(toCurrent);
-		System.out.println("curr " + current.toString());
-		UICtrlV2.gui.getMp().getPlp().refresh(toCurrent);
-		UICtrlV2.refreshDataDP();
-		UICtrlV2.gui.repaint();
+		if(toCurrent != null)
+		{
+			System.out.println("curr " + current.toString());
+			UICtrlV2.gui.getMp().getPlp().refresh(toCurrent);
+			UICtrlV2.refreshDataDP();
+			UICtrlV2.gui.repaint();
+		}
 	}
 	
 	/**
@@ -91,9 +91,22 @@ public class UICtrlV2 extends Controller{
 		gui.remove(gui.getNplp());
 		gui.getNplp().setVisible(false);
 		gui.getMp().setVisible(true);
-		System.out.println("NpLp  " + gui.getMp().isVisible());
-		System.out.println("Mp  " + gui.getMp().isVisible());
-		System.out.println("closeNoPl");
+		gui.validate();
+		gui.repaint();
+		}
+	}
+	/**
+	 * Refreshes the view when the last photolist has been deleted
+	 * @author Anas Alaoui M'Darhri
+	 */
+	public static void reopenNoPl()
+	{
+		if(UICtrlV2.loadedPhotoLists.isEmpty())
+		{
+		gui.add(gui.getNplp());
+		gui.remove(gui.getMp());
+		gui.getNplp().setVisible(true);
+		gui.getMp().setVisible(false);
 		gui.validate();
 		gui.repaint();
 		}
@@ -169,8 +182,16 @@ public class UICtrlV2 extends Controller{
 			UICtrlV2.setCurrent(uid);
 			UICtrlV2.gui.getMp().getPll().add(UICtrlV2.loadedPhotoLists.get(uid));
 			UICtrlV2.gui.repaint();
-			System.out.println("HELLO REPAINT");
 		}
 	
+	}
+
+	public static void deleteGalleryAction(JButton jButton4) {
+		PhotoList remove = UICtrlV2.loadedPhotoLists.remove(UICtrlV2.getCurrent());
+			UICtrlV2.labels.remove(UICtrlV2.getCurrent());
+			UICtrlV2.gui.getMp().getPll().remove(UICtrlV2.getCurrent());
+			UICtrlV2.setCurrent(null);
+			UICtrlV2.reopenNoPl();
+			UICtrlV2.gui.repaint();
 	}
 }
